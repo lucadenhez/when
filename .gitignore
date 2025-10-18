@@ -40,3 +40,6 @@ Thumbs.db
 
 # Pycharm files (optional, if using PyCharm)
 .idea/
+
+# ignore credentials JSON file
+credentials
