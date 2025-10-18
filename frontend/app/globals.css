@@ -4,6 +4,12 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --bg: "#ffffff";
+  --fg: "#ffffff";
+  --accent: "#ffffff";
+  --bg: "#ffffff";
+
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);

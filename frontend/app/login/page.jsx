@@ -23,7 +23,7 @@ export default function Login() {
   }
 
   useEffect(() => {
-    setupRecaptcha();
+    // setupRecaptcha();
   }, []);
 
   const handleSendCode = async () => {
