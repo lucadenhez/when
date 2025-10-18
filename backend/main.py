@@ -9,15 +9,14 @@ import os
 from dotenv import load_dotenv
 import io
 
-cred = credentials.Certificate("path/to/your/serviceAccountKey.json")
-firebase_admin.initialize_app(cred)
-
 app = FastAPI()
 load_dotenv()
 
 cred_path = os.getenv("FIREBASE_CREDENTIAL_PATH")
 cred = credentials.Certificate(cred_path)
 initialize_app(cred)
+
+REDIRECT_URI = "http://localhost:8000/oauth2callback"
 
 app.add_middleware(
     CORSMiddleware,
@@ -37,6 +36,11 @@ async def verify_token(request: Request):
         return decoded_token
     except Exception:
         return None
+
+@app.get("/oauth2callback")
+async def oauth2callback(request: Request):
+    code = request.query_params.get("code")
+    return RedirectResponse(url=f"http://localhost:3000/success?code={code}")
 
 
 @app.post("/create_event") 
