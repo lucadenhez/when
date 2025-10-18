@@ -21,8 +21,8 @@ export const setupRecaptcha = () => {
 export const sendVerificationCode = async (phoneNumber) => {
   try {
     const appVerifier = window.recaptchaVerifier;
-    const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
-    alert('Verification code sent!');
+    const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier); // handle billing not enabled, failed to send etc. Firebase: Error (auth/billing-not-enabled).
+    // alert('Verification code sent!');
 
     return confirmationResult;
   } catch (error) {
