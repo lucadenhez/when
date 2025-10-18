@@ -9,7 +9,7 @@ import { setupRecaptcha, sendVerificationCode, verifyCodeAndSignIn } from "../..
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState(null);
   const [verificationCode, setVerificationCode] = useState('');
   const [confirmationResult, setConfirmationResult] = useState(null);
 
@@ -46,7 +46,7 @@ export default function Login() {
           defaultCountry="US"
           placeholder="Phone Number"
           value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
+          onChange={(e) => setPhoneNumber(e.target)}
         />
         <Button disabled={isLoading} onClick={() => handleSendCode() }>
           {isLoading ? (
@@ -55,6 +55,7 @@ export default function Login() {
 
         </Button>
       </form>
+      <div id="recaptcha-container"></div>
     </div>
   );
 }
