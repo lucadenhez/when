@@ -1,4 +1,7 @@
 import Image from "next/image";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import React, { useEffect, useState } from "react";
+import PhoneAuthComponent from "./test_components/phone_number_test"
 
 export default function Home() {
   return (
@@ -24,6 +27,11 @@ export default function Home() {
             Save and see your changes instantly.
           </li>
         </ol>
+        <div>
+          <PhoneAuthComponent>
+
+          </PhoneAuthComponent>
+        </div>
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <a
