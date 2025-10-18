@@ -4,6 +4,7 @@ venv/
 ENV/
 env/
 secrets/
+secrets/
 
 # Python cache files
 __pycache__/
