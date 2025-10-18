@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+// import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import PhoneAuthComponent from "./test_components/phone_number_test"
 
