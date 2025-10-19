@@ -54,10 +54,9 @@ async def oauth2callback(request: Request):
 @app.post("/store_google_tokens")
 async def setup_calendar(request: Request):
     body = await request.json()
-    uid = body.get("uid")
     code = body.get("code")
 
-    if not uid or not code:
+    if not code:
         raise HTTPException(status_code=400, detail="Missing uid or code")
 
     flow = Flow.from_client_config(
@@ -76,16 +75,13 @@ async def setup_calendar(request: Request):
     flow.fetch_token(code=code)
     creds = flow.credentials
 
-    db.collection("users").document(uid).set({
-        "calendar_tokens": {
-            "access_token": creds.token,
-            "refresh_token": creds.refresh_token,
-            "expiry": creds.expiry.isoformat(),
-            "calendarConnected": True
-        }
-    }, merge=True)
+    token = {
+        "access_token": creds.token,
+        "refresh_token": creds.refresh_token,
+        "expiry": creds.expiry.isoformat(),
+    }
 
-    return { "status": "success" }
+    return { "calendar_tokens": token }
 
 
 @app.post("/create_event") 

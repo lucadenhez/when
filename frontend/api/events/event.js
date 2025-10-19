@@ -19,3 +19,7 @@ export default async function CreateEvent(eventData) {
     }
 
 }
+
+export default async function AddAvailability() {
+    
+}
