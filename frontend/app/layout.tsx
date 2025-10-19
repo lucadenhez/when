@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css"
+import { auth } from "../api/firebase/firebase";
+import { redirect } from "next/navigation";
+import Auth from "./components/authentication/Auth";
 
 const sanFranciscoPro = localFont({
   src: [
@@ -81,6 +84,7 @@ export const metadata: Metadata = {
   }
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -94,7 +98,9 @@ export default function RootLayout({
       <body
         className={`${sanFranciscoPro.variable} antialiased`}
       >
-        {children}
+        <Auth>
+          {children}
+        </Auth>
       </body>
     </html>
   );
