@@ -38,7 +38,7 @@ export const AddAvailability = async () => {
                 },
                 body: JSON.stringify({
                     tokens: calendar_tokens,
-                    eventId: "eventcode1010",
+                    eventId: "eventcode0101",
                     endDate: "10-31-2025"
                 })
             })
