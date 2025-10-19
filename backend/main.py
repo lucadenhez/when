@@ -28,7 +28,7 @@ app = FastAPI()
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
-REDIRECT_URI = "http://localhost:8000/oauth2callback"
+REDIRECT_URI = "http://play.lucadenhez.com:8000/oauth2callback"
 
 app.add_middleware(
     CORSMiddleware,
@@ -53,7 +53,7 @@ async def verify_token(request: Request):
 async def oauth2callback(request: Request):
     code = request.query_params.get("code")
 
-    return RedirectResponse(url=f"http://localhost:3000/success?code={code}")
+    return RedirectResponse(url=f"http://when-three.vercel.app/success?code={code}")
 
 @app.post("/store_google_tokens")
 async def setup_calendar(request: Request):
@@ -73,7 +73,7 @@ async def setup_calendar(request: Request):
             }
         },
         scopes=["https://www.googleapis.com/auth/calendar"],
-        redirect_uri=f"http://localhost:8000/oauth2callback"
+        redirect_uri=f"http://play.lucadenhez.com:8000/oauth2callback"
     )
 
     flow.fetch_token(code=code)
