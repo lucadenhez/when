@@ -4,7 +4,6 @@ import { motion } from "motion/react";
 import CalendarUpload from "../../components/calendar_upload";
 import { connectGoogleCalendar } from "@/api/google_plugins/calendar";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 
 export default function UploadCalendar() {
@@ -59,7 +58,6 @@ export default function UploadCalendar() {
     // <AuroraBackground>
     <>
       <div className="absolute inset-0 -z-10 h-full w-full bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,#89CFF0_100%)]"></div>
-
       <div className="h-screen flex items-center justify-center animate-aurora">
         <div className="text-center space-y-10">
           <motion.div
@@ -74,7 +72,7 @@ export default function UploadCalendar() {
             </div>
           </motion.div>
           <div className="space-y-3 max-w-[80%] m-auto">
-            {calendar_upload_choices.map((calendar_choice: CalendarChoice) => (
+            {calendar_upload_choices.map((calendar_choice) => (
               <CalendarUpload
                 key={calendar_choice.Title}
                 {...calendar_choice}
