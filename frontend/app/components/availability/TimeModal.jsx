@@ -1,8 +1,10 @@
 import { Sheet } from "react-modal-sheet";
 import { useState, useImperativeHandle, forwardRef, useRef } from "react";
 import Image from "next/image";
+import { GetDayHours } from "@/api/events/event";
+import SubmitButton from "../../components/availability/SubmitButton";
 
-const TimeModal = forwardRef(function TimeModal({ selectedTime, setSelectedTime, selectedDate }, ref) {
+const TimeModal = forwardRef(function TimeModal({ selectedTime, setSelectedTime, selectedDate, whenID }, ref) {
   const [open, setOpen] = useState(false);
   const roundedRef = useRef(null);
 
@@ -19,6 +21,18 @@ const TimeModal = forwardRef(function TimeModal({ selectedTime, setSelectedTime,
 
   const times = Array.from({ length: 24 }, (_, i) => i);
 
+  if (selectedDate) {
+    console.log("Selected date: " + selectedDate);
+
+    GetDayHours(whenID, selectedDate).then((hours) => {
+      console.log("Hours:", hours);
+    });
+  }
+
+
+
+  // style={{ backgroundColor: isSelectedDay ? "#5EAA52" : dateObj ? `rgba(8, 67, 150, ${dateObj[1] / max})` : "transparent" }}
+
   return (
     <Sheet isOpen={open} onClose={() => setOpen(false)} snapPoints={[0, 0.75, 1]} initialSnap={1}>
       <Sheet.Container>
@@ -32,9 +46,9 @@ const TimeModal = forwardRef(function TimeModal({ selectedTime, setSelectedTime,
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 mt-3 ml-3 w-full">
               {times.map((hour, i) => {
                 const displayTime = hour.toString().padStart(2, "0") + ":00";
-                const dataTime = hour.toString().padStart(2, "0") + "00";
+                const dataTime = hour.toString();
 
-                console.log(dataTime);
+                // console.log(dataTime);
 
                 return (
                   <div key={i} className="relative">
@@ -44,14 +58,13 @@ const TimeModal = forwardRef(function TimeModal({ selectedTime, setSelectedTime,
                       width={30}
                       height={30}
                       alt="checkmark"
-                      hidden={dataTime !== selectedTime}
+                      hidden={selectedTime && dataTime !== selectedTime.substr(0, 2)}
                     />
                     <button
-                      className={`relative z-0 border-2 text-center rounded-xl bg-[#F0F0F0] w-full py-2 font-semibold transition-all duration-150 ${dataTime === selectedTime ? "border-[#5EAA52] scale-105" : "border-transparent"
-                        }`}
+                      className={`relative z-0 border-2 text-center rounded-xl w-full py-2 font-semibold transition-all duration-150 ${selectedTime && dataTime === selectedTime.substr(0, 2) ? "border-[#5EAA52] scale-105" : "border-transparent"}`}
+
                       onClick={() => {
-                        setSelected(i);
-                        onSelect?.(hour);
+                        setSelectedTime(dataTime);
                       }}
                     >
                       <p>{displayTime}</p>
@@ -59,6 +72,14 @@ const TimeModal = forwardRef(function TimeModal({ selectedTime, setSelectedTime,
                   </div>
                 );
               })}
+            </div>
+            <div className="mt-20 ml-5">
+              <SubmitButton
+                selectedTime={selectedTime}
+                selectedDate={selectedDate}
+                whenID={whenID}
+                modalRef={ref}
+              />
             </div>
           </div>
         </Sheet.Content>

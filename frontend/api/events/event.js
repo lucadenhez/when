@@ -20,18 +20,34 @@ export const GetEvent = async (eventID) => {
     return snapshot.data();
 };
 
-export const SelectBestTime = async (eventID, date, time) => {
-    const data = GetEvent(eventID);
-    const docRef = doc(db, "events", eventID);
-
-    var parsed = Date.parse(date)
-    parsed.hours = Math.parse(time.substring(0, 2))
-    parsed.minutes = Math.parse(time.substring(2))
-
-    data.bestTimes.push(parsed.toString());
-
-    await setDoc(docRef, data);
+export const GetDayHours = async (eventID, date) => {
+    const event = await GetEvent(eventID);
+    return event.schema; // maybe? // [date].availableCount
 }
+
+export const AddBestTime = async (eventID, date, time) => {
+  const data = await GetEvent(eventID); // should return an object (the event)
+  const docRef = doc(db, "events", eventID);
+
+  // Parse date and time
+  const parsedDate = new Date(date);
+  const hours = parseInt(time.substring(0, 2));
+  const minutes = parseInt(time.substring(2));
+
+  parsedDate.setHours(hours);
+  parsedDate.setMinutes(minutes);
+
+  // Ensure bestTimes exists
+  if (!Array.isArray(data.bestTimes)) {
+    data.bestTimes = [];
+  }
+
+  // Add the time
+  data.bestTimes.push(parsedDate.toISOString());
+
+  // Save updated document
+  await setDoc(docRef, data);
+};
 
 export const GetBestTime = async (eventID) => {
     const docRef = doc(db, "events", eventID);
@@ -44,9 +60,11 @@ export const GetBestTime = async (eventID) => {
     const data = snapshot.data();
     const bestTimes = data.bestTimes;
     const numPeople = data.numPeople;
-    
+
     if (bestTimes.length == numPeople) {
         return Date.parse(bestTimes[0]).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    } else {
+        return `${bestTimes.length} / ${numPeople} people have submitted their free days. Check back soon!`;
     }
 }
 

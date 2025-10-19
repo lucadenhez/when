@@ -24,8 +24,8 @@ export default function Availability() {
   const swiperRef = useRef(null);
   const modalRef = useRef(null);
 
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedTime, setSelectedTime] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
   const [event, setEvent] = useState(null);
   const [suggestedDays, setSuggestedDays] = useState([]);
   const [selectedSuggestedIndex, setSelectedSuggestedIndex] = useState(null);
@@ -63,6 +63,7 @@ export default function Availability() {
           selectedTime={selectedTime}
           setSelectedTime={setSelectedTime}
           selectedDate={selectedDate}
+          whenID={whenID}
         />
         <div className="flex flex-col items-center h-screen justify-between">
           <div className="flex flex-col items-center">
