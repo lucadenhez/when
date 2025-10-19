@@ -96,7 +96,11 @@ export default function Availability() {
               />
             </SwiperSlide>
             <SwiperSlide className="flex justify-center">
-              <SuggestedDays dates={suggestedDays}
+              <SuggestedDays dates={[
+                    { day: "10-24-2025", prettyDay: "Fri, Oct 24", time: "17:15" },
+                    { day: "10-20-2025", prettyDay: "Mon, Oct 20", time: "10:00" },
+                    { day: "10-27-2025", prettyDay: "Mon, Oct 27", time: "19:30" },
+                  ]}
                 swiperRef={swiperRef}
                 setSelectedDay={setSelectedDay}
               />

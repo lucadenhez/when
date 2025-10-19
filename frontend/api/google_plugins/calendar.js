@@ -7,8 +7,6 @@ import { userInfo } from 'os';
 //dotenv.config();
 
 export const connectGoogleCalendar = async () => {
-
-    localStorage.removeItem('calendar_tokens');
     const authorized = await isAuthorizedForCalendar();
 
     if (!authorized) {
