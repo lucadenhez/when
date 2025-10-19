@@ -3,7 +3,8 @@
 import { useMemo } from "react";
 
 export default function AvailabilityCalendar({ data, max, selectedDay }) {
-  const allDates = data.availableDays.map((d) => new Date(d.day));
+  console.log(data);
+  const allDates = Object.keys(data).map((d) => new Date(d));
   const minDate = new Date(Math.min(...allDates));
   const maxDate = new Date(Math.max(...allDates));
 
@@ -33,7 +34,7 @@ export default function AvailabilityCalendar({ data, max, selectedDay }) {
     while (current <= endDate) {
       let peopleAvailable = 0;
 
-      for (const { day, people } of data.availableDays) {
+      for (const [day, people] of Object.entries(data)) {
         const [month, d, year] = day.split("-").map(Number);
         const targetDate = new Date(year, month - 1, d);
 
@@ -43,7 +44,7 @@ export default function AvailabilityCalendar({ data, max, selectedDay }) {
           current.getDate() === targetDate.getDate();
 
         if (isSameDay) {
-          peopleAvailable = people.length;
+          peopleAvailable = Array.isArray(people) ? people.length : 0;
           break;
         }
       }

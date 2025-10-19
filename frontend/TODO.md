@@ -4,4 +4,7 @@
 - Be able to tap day on calendar and show modal
 - Multiple select days / hours
 - Add other calendar integration later
-- 
+- Meta favicon and info
+- QR code and link page
+- Home page
+- Form

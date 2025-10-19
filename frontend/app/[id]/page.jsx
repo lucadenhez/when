@@ -3,34 +3,54 @@
 import example_schema from "./example_schema";
 
 import AvailabilityCalendar from "../components/availability/AvailabilityCalendar";
-import Tabination from "../components/availability/Tabination";
 import ColorKey from "../components/availability/ColorKey";
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
+import { Pagination, Scrollbar, A11y } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import SuggestedDays from "../components/availability/SuggestedDays";
-import { useRef, useState } from "react";
+import Loading from "../components/Loading";
+import { useEffect, useRef, useState } from "react";
 import DayModal from "../components/availability/DayModal";
 import { GetEvent } from "../../api/events/event";
 
-export default async function Availability() {
+export default function Availability() {
   const whenID = useParams().id;
   const swiperRef = useRef(null);
   const [selectedDay, setSelectedDay] = useState("");
   const modalOpen = useState(false);
+  const [event, setEvent] = useState(null);
 
+  const { push } = useRouter();
 
-  const event = await GetEvent(whenID).then(() => {
-    console.log(event);
-  });
+  useEffect(() => {
+    const fetchEvent = async () => {
+      const data = await GetEvent(whenID);
+      console.log("Fetched event:", data);
+
+      if (data) {
+        setEvent(data);
+        console.log(data);
+      } else {
+        push("/huh");
+      }
+    };
+
+    fetchEvent();
+  }, [whenID]);
+
+  // <DayModal isOpen={modalOpen} />
+
+  if (!event) return (
+    <Loading />
+  );
 
   return (
     <div>
-      <DayModal isOpen={modalOpen} />
+
       <div className="flex flex-col items-center h-screen justify-between">
         <div className="flex flex-col items-center">
           <div className="mt-20 text-center mb-12">
@@ -38,7 +58,7 @@ export default async function Availability() {
             <p className="text-2xl text-black/50">When works best for you?</p>
           </div>
           <div className="w-full mb-7">
-            <ColorKey min={1} max={4} />
+            <ColorKey max={event.numPeople} />
           </div>
           <div className="w-full">
             <div className="flex justify-center gap-10 items-center">
@@ -66,9 +86,8 @@ export default async function Availability() {
           >
             <SwiperSlide className="flex justify-center">
               <AvailabilityCalendar
-                data={example_schema}
-                min={1}
-                max={4}
+                data={event.schema}
+                max={event.numPeople}
                 selectedDay={selectedDay}
               />
             </SwiperSlide>
