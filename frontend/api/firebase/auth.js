@@ -37,7 +37,7 @@ export const verifyCodeAndSignIn = async (confirmationResult, code) => {
     const user = userCredential.user;
 
     const userData = {
-      phoneNumber: user.email,
+      phoneNumber: user.phoneNumber,
       displayName: user.displayName || 'Mysterious',
       photoURL: user.photoURL || 'https://example.com/default-photo.jpg',
     };
