@@ -28,6 +28,7 @@ interface MobileFormProps {
   setLocation: (value: string) => void;
   latestDate: string;
   setLatestDate: (value: string) => void;
+  randomCode: string;
 }
 
 export default function MobileForm({
@@ -49,23 +50,6 @@ export default function MobileForm({
   const [currentForm, setCurrentForm] = useState(1);
 
   const [submitted, setSubmitted] = useState(false);
-
-  useEffect(() => {}, [currentForm]);
-
-  useEffect(() => {
-    if (submitted) {
-      console.log(
-        "Form submitted! Here is all the information that the user entered"
-      );
-      console.log(`Event name: ${eventName}`);
-      console.log(`Short event name: ${shortName}`);
-      console.log(`Description: ${description}`);
-      console.log(`Hours: ${hours}`);
-      console.log(`Minutes: ${minutes}`);
-      console.log(`Location: ${location}`);
-      console.log(`latestDate: ${latestDate}`);
-    }
-  }, [submitted]);
 
   const handleSlidePlus = () => {
     setCurrentForm(currentForm + 1);
@@ -113,6 +97,9 @@ export default function MobileForm({
             className="w-full p-4"
           >
             <DurationAndDate
+              eventName={eventName}
+              shortName={shortName}
+              description={description}
               hours={hours}
               setHours={setHours}
               minutes={minutes}

@@ -76,8 +76,11 @@ export default function Login() {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col justify-center items-center gap-5">
-      <p className="text-center font-semibold text-4xl mb-20">Welcome to When</p>
+    <>
+          <div className="absolute inset-0 -z-10 h-full w-full bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,#89CFF0_100%)]"></div>
+
+    <div className="w-full h-screen flex flex-col justify-center items-center space-y-10">
+      <p className="text-center font-bold text-3xl">Create Account / Sign In</p>
 
       <Form {...form}>
         <form
@@ -100,6 +103,7 @@ export default function Login() {
                     placeholder="Enter a phone number"
                     value={field.value}
                     onChange={field.onChange}
+                    className="focus:border focus:border-black"
                   />
                 </FormControl>
                 <FormMessage />
@@ -131,5 +135,6 @@ export default function Login() {
 
       <div id="recaptcha-container"></div>
     </div>
+    </>
   );
 }
