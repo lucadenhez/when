@@ -1,16 +1,37 @@
 "use client";
 
-export default function SuggestedDays({ days }) {
-  
+import { useState } from "react";
+import Image from "next/image";
 
-  const day = "Fri, Oct 24";
-  const time = "5pm";
+export default function SuggestedDays({ dates, swiperRef }) {
+  const [selected, setSelected] = useState(null);
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="border-2 border-black/5 text-center rounded-2xl bg-[#F0F0F0] w-full py-3 font-semibold">
-        <p>{`${day} @ ${time}`}</p>
-      </div>
+    <div className="flex flex-col gap-3 mt-3 ml-3">
+      {dates.map((date, index) => (
+        <div key={index} className="relative">
+          <Image
+            src="images/icons/confirmation/checkmark.svg"
+            className="absolute -top-3 -left-3 z-10"
+            width={30}
+            height={30}
+            alt="checkmark"
+            hidden={index !== selected}
+          />
+          <button
+            className="relative z-0 border-2 text-center rounded-2xl bg-[#F0F0F0] w-full py-3 font-semibold overflow-visible"
+            style={{ borderColor: index === selected ? "#5EAA52" : "" }}
+            onClick={() => {
+              setSelected(index);
+              setTimeout(() => {
+                swiperRef.current?.slidePrev();
+              }, 250);
+            }}
+          >
+            <p>{`${date.day} @ ${date.time}`}</p>
+          </button>
+        </div>
+      ))}
     </div>
   );
 }

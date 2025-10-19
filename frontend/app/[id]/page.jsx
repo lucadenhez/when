@@ -13,9 +13,13 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import SuggestedDays from "../components/availability/SuggestedDays";
+import { useRef } from "react";
 
 export default function Availability() {
   const whenID = useParams().id;
+  const swiperRef = useRef(null);
+
+
 
 
 
@@ -41,21 +45,26 @@ export default function Availability() {
           slidesPerView={1}
           pagination={{ clickable: true }}
           className="w-full"
+          loop
+          onSwiper={(swiper) => (swiperRef.current = swiper)}
         >
           <SwiperSlide className="flex justify-center">
             <AvailabilityCalendar data={example_schema} min={1} max={4} />
           </SwiperSlide>
           <SwiperSlide className="flex justify-center">
-            <div className="h-full">
-              <SuggestedDays />
-            </div>
-
+            <SuggestedDays dates={[
+              { "day": "Fri, Oct 24", "time": "5pm" },
+              { "day": "Wed, Oct 22", "time": "1pm" },
+              { "day": "Mon, Oct 20", "time": "10am" }
+            ]}
+              swiperRef={swiperRef}
+            />
           </SwiperSlide>
         </Swiper>
       </div>
 
       <p className="mb-12 text-sm text-black/50 font-semibold">
-        Swipe to the left to view suggested days
+        Swipe to view suggested days
       </p>
     </div>
   );
