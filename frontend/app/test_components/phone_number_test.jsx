@@ -19,7 +19,7 @@ export default function PhoneAuthComponent() {
   };
 
   const add = async () => {
-    await AddAvailability();
+    await AddAvailability({"time": 60});
   }
 
   const google = async () => {

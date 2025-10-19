@@ -2,8 +2,9 @@
 
 import { useMemo } from "react";
 
-export default function AvailabilityCalendar({ data, max }) {
-  const allDates = data.availableDays.map((d) => new Date(d.day));
+export default function AvailabilityCalendar({ data, max, selectedDay }) {
+  console.log(data);
+  const allDates = Object.keys(data).map((d) => new Date(d));
   const minDate = new Date(Math.min(...allDates));
   const maxDate = new Date(Math.max(...allDates));
 
@@ -33,7 +34,7 @@ export default function AvailabilityCalendar({ data, max }) {
     while (current <= endDate) {
       let peopleAvailable = 0;
 
-      for (const { day, people } of data.availableDays) {
+      for (const [day, people] of Object.entries(data)) {
         const [month, d, year] = day.split("-").map(Number);
         const targetDate = new Date(year, month - 1, d);
 
@@ -43,7 +44,7 @@ export default function AvailabilityCalendar({ data, max }) {
           current.getDate() === targetDate.getDate();
 
         if (isSameDay) {
-          peopleAvailable = people.length;
+          peopleAvailable = people.availableCount;
           break;
         }
       }
@@ -88,29 +89,25 @@ export default function AvailabilityCalendar({ data, max }) {
         {weeks.map((week, i) => (
           <div key={i} className="grid grid-cols-7 gap-0">
             {week.map((dateObj, j) => {
-              // determine if this cell and its immediate horizontal neighbors are selected
               const selected = dateObj && dateObj[1] > 0;
               const leftSelected = j > 0 && week[j - 1] && week[j - 1][1] > 0;
               const rightSelected = j < 6 && week[j + 1] && week[j + 1][1] > 0;
 
-              // approximate tailwind 'rounded-md' in px
-              const radius = 7;
-              const borderRadiusStyle = selected
-                ? {
-                  borderTopLeftRadius: leftSelected ? 0 : radius,
-                  borderBottomLeftRadius: leftSelected ? 0 : radius,
-                  borderTopRightRadius: rightSelected ? 0 : radius,
-                  borderBottomRightRadius: rightSelected ? 0 : radius,
-                }
-                : { borderRadius: radius };
+              let isSelectedDay, isToday;
+
+              if (dateObj) {
+                isSelectedDay = new Date(selectedDay).toDateString() === dateObj[0].toDateString();
+                isToday = new Date().toDateString() === dateObj[0].toDateString();
+              }
 
               return (
                 <div
                   key={j}
-                  className="w-10 h-10 flex items-center justify-center"
+                  className="w-10 h-10 flex items-center justify-center rounded-md"
                   style={{
-                    backgroundColor: dateObj ? `rgba(31, 114, 230, ${dateObj[1] / max})` : "transparent",
-                    ...borderRadiusStyle,
+                    backgroundColor: isSelectedDay ? "#5EAA52" : dateObj ? `rgba(8, 67, 150, ${dateObj[1] / max})` : "transparent",
+                    border: dateObj && isToday ? "3px solid" : "",
+                    borderColor: isToday ? "#D57070" : ""
                   }}
                 >
                   <p style={{ color: dateObj && dateObj[1] / max > 0.5 ? "#ffffff" : "#000000" }}>

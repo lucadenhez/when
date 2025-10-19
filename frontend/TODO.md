@@ -1,0 +1,10 @@
+- Add prettier OTP field to login
+- Handle auth errors during login
+- Create modal for dates
+- Be able to tap day on calendar and show modal
+- Multiple select days / hours
+- Add other calendar integration later
+- Meta favicon and info
+- QR code and link page
+- Home page - Noam
+- Form - Noam
