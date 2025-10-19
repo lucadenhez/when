@@ -27,7 +27,7 @@ export default function SuggestedDays({ dates, swiperRef, setSelectedDay }) {
               setTimeout(() => {
                 swiperRef.current?.slidePrev();
                 // open modal here
-              }, 250);
+              }, 500);
             }}
           >
             <p>{`${date.prettyDay} @ ${date.time}`}</p>
