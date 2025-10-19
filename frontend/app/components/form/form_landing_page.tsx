@@ -47,7 +47,7 @@ export default function FormLandingPage({
         <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
           <button
             onClick={handleSlidePlus}
-            className="px-5 py-3 bg-blue-400 hover:bg-blue-500 hover:cursor-pointer text-xl rounded-full text-white transition-all duration-200"
+            className="text-lg font-semibold bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400 py-3 px-6 rounded-full text-white"
           >
             Get started
           </button>
