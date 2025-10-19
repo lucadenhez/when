@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { PhoneInput } from "../components/authentication/PhoneInput";
+import { useRouter } from 'next/navigation';
+
 import {
   setupRecaptcha,
   sendVerificationCode,
@@ -27,6 +29,8 @@ export default function Login() {
   const [confirmationResult, setConfirmationResult] = useState(null);
   const [step, setStep] = useState("phone"); // phone or verification state: phone shows phone # entry, verification shows OTP form
 
+  const { push } = useRouter();
+
   const form = useForm({
     defaultValues: {
       phone: "",
@@ -38,11 +42,6 @@ export default function Login() {
   }, []);
 
   const handleSendCode = async (phoneNumber) => {
-    if (!isValidPhoneNumber(phoneNumber)) {
-      alert("Please enter a valid phone number");
-      return;
-    }
-
     try {
       setSentStatus("Loading...");
       const result = await sendVerificationCode(phoneNumber);
@@ -62,12 +61,18 @@ export default function Login() {
 
   const handleVerifyCode = async () => {
     if (!confirmationResult || !verificationCode) return;
+
     try {
-      await verifyCodeAndSignIn(confirmationResult, verificationCode);
-      alert("Phone number verified!");
+      // confirmationResult.confirm is the actual Firebase function
+      const result = await confirmationResult.confirm(verificationCode);
+      console.log("Sign in successful:", result);
+      push("/create"); // only runs if no error
     } catch (err) {
       console.error("Verification failed:", err);
-      alert("Invalid code. Please try again.");
+      setSentStatus("Invalid code. Please try again.");
+      setTimeout(() => {
+        setSentStatus("Send Verification Code");
+      }, 1000);
     }
   };
 
@@ -76,60 +81,65 @@ export default function Login() {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col justify-center items-center gap-5">
-      <p className="text-center font-semibold text-4xl mb-20">Welcome to When</p>
+    <>
+      <div className="absolute inset-0 -z-10 h-full w-full bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,#89CFF0_100%)]"></div>
 
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col items-center gap-5 w-80"
-        >
-          <FormField
-            control={form.control}
-            name="phone"
-            rules={{
-              required: "Phone number is required",
-              validate: (value) =>
-                isValidPhoneNumber(value) || "Invalid phone number",
-            }}
-            render={({ field }) => (
-              <FormItem className="flex flex-col items-start">
-                <FormControl>
-                  <PhoneInput
-                    defaultCountry="US"
-                    placeholder="Enter a phone number"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button
-            type="submit"
-            disabled={sentStatus == "Loading..."}
-            className="w-full p-7"
+      <div className="w-full h-screen flex flex-col justify-center items-center space-y-10">
+        <p className="text-center font-bold text-3xl">Create Account / Sign In</p>
+
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col items-center gap-5 w-80"
           >
-            {sentStatus}
-          </Button>
-        </form>
-      </Form>
+            <FormField
+              control={form.control}
+              name="phone"
+              rules={{
+                required: "Phone number is required",
+                validate: (value) =>
+                  isValidPhoneNumber(value) || "Invalid phone number",
+              }}
+              render={({ field }) => (
+                <FormItem className="flex flex-col items-start">
+                  <FormControl>
+                    <PhoneInput
+                      defaultCountry="US"
+                      placeholder="Enter a phone number"
+                      value={field.value}
+                      onChange={field.onChange}
+                      className="focus:border focus:border-black"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              type="submit"
+              disabled={sentStatus == "Loading..."}
+              className="w-full p-7"
+            >
+              {sentStatus}
+            </Button>
+          </form>
+        </Form>
 
-      {confirmationResult && (
-        <div className="flex flex-col items-center gap-3">
-          <input
-            type="text"
-            value={verificationCode}
-            onChange={(e) => setVerificationCode(e.target.value)}
-            placeholder="Enter verification code"
-            className="border rounded p-2 w-48"
-          />
-          <Button onClick={handleVerifyCode}>Verify Code</Button>
-        </div>
-      )}
+        {confirmationResult && (
+          <div className="flex flex-col items-center gap-3">
+            <input
+              type="text"
+              value={verificationCode}
+              onChange={(e) => setVerificationCode(e.target.value)}
+              placeholder="Enter verification code"
+              className="border rounded p-2 w-48"
+            />
+            <Button onClick={handleVerifyCode}>Verify Code</Button>
+          </div>
+        )}
 
-      <div id="recaptcha-container"></div>
-    </div>
+        <div id="recaptcha-container"></div>
+      </div>
+    </>
   );
 }

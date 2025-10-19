@@ -6,7 +6,7 @@ export const CreateEvent = async (eventData) => {
 
     const docRef = doc(db, "events", eventData["code"]);
 
-    await setDoc(docRef, { "schema": {}, "numPeople": 0, "eventData": {} });
+    await setDoc(docRef, { "schema": {}, "numPeople": 0, "eventData": eventData["data"] });
 }
 
 export const GetEvent = async (eventID) => {

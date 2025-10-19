@@ -1,5 +1,6 @@
 "use client";
 
+import { StringToBoolean } from "class-variance-authority/types";
 import { motion } from "motion/react";
 
 interface DesktopFormProps {
@@ -17,6 +18,7 @@ interface DesktopFormProps {
     setLocation: (value: string) => void;
     latestDate: string;
     setLatestDate: (value: string) => void;
+    randomCode: string;
 }
 
 export default function DesktopForm({

@@ -6,5 +6,5 @@
 - Add other calendar integration later
 - Meta favicon and info
 - QR code and link page
-- Home page
-- Form
+- Home page - Noam
+- Form - Noam

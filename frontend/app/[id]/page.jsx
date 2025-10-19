@@ -21,7 +21,7 @@ export default function Availability() {
   const whenID = useParams().id;
   const swiperRef = useRef(null);
   const [selectedDay, setSelectedDay] = useState("");
-  const modalOpen = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [event, setEvent] = useState(null);
   const [suggestedDays, setSuggestedDays] = useState([]);
 
@@ -54,7 +54,7 @@ export default function Availability() {
 
   return (
     <div>
-
+      <DayModal isOpen={modalOpen} setOpen={setModalOpen} />
       <div className="flex flex-col items-center h-screen justify-between">
         <div className="flex flex-col items-center">
           <div className="mt-20 text-center mb-12">
@@ -64,7 +64,7 @@ export default function Availability() {
           <div className="w-full mb-7">
             <ColorKey max={event.numPeople} />
           </div>
-          <div className="w-full">
+          <div className="w-full mb-5">
             <div className="flex justify-center gap-10 items-center">
               <div className="flex justify-between items-center gap-3">
                 <div className="w-3 h-3 rounded-full bg-[#5EAA52]" />
@@ -78,17 +78,17 @@ export default function Availability() {
           </div>
         </div>
 
-        <div className="w-full max-w-full sm:max-w-1/3">
+        <div className="w-full max-w-full sm:max-w-1/3 h-full">
           <Swiper
             modules={[Pagination, Scrollbar, A11y]}
             spaceBetween={30}
             slidesPerView={1}
             pagination={{ clickable: true }}
-            className="w-full"
             loop
+            className="w-full h-full"
             onSwiper={(swiper) => (swiperRef.current = swiper)}
           >
-            <SwiperSlide className="flex justify-center">
+            <SwiperSlide className="flex items-center justify-center h-full">
               <AvailabilityCalendar
                 data={event.schema}
                 max={event.numPeople}
