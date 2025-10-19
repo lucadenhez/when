@@ -15,18 +15,18 @@ import 'swiper/css/scrollbar';
 import SuggestedDays from "../components/availability/SuggestedDays";
 import { useRef, useState } from "react";
 import DayModal from "../components/availability/DayModal";
+import { GetEvent } from "../../api/events/event";
 
-export default function Availability() {
+export default async function Availability() {
   const whenID = useParams().id;
   const swiperRef = useRef(null);
   const [selectedDay, setSelectedDay] = useState("");
   const modalOpen = useState(false);
 
 
-
-
-
-
+  const event = await GetEvent(whenID).then(() => {
+    console.log(event);
+  });
 
   return (
     <div>

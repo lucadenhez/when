@@ -10,11 +10,11 @@ export const CreateEvent = async (eventData) => {
 }
 
 export const GetEvent = async (eventData) => {
-    const docRef = doc(db, "events", eventData["code"])
+    const docRef = doc(db, "events", eventData)
 
     const doc = (await getDoc(docRef)).toJSON();
 
-    return doc
+    return doc;
 }
 
 export const EventExists = async (eventData) => {
