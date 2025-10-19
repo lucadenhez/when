@@ -2,8 +2,9 @@
 
 import { useMemo } from "react";
 
-export default function AvailabilityCalendar({ data, max }) {
-  const allDates = data.availableDays.map((d) => new Date(d.day));
+export default function AvailabilityCalendar({ data, max, selectedDay }) {
+  console.log(data);
+  const allDates = Object.keys(data).map((d) => new Date(d));
   const minDate = new Date(Math.min(...allDates));
   const maxDate = new Date(Math.max(...allDates));
 
@@ -33,7 +34,7 @@ export default function AvailabilityCalendar({ data, max }) {
     while (current <= endDate) {
       let peopleAvailable = 0;
 
-      for (const { day, people } of data.availableDays) {
+      for (const [day, people] of Object.entries(data)) {
         const [month, d, year] = day.split("-").map(Number);
         const targetDate = new Date(year, month - 1, d);
 
@@ -43,7 +44,7 @@ export default function AvailabilityCalendar({ data, max }) {
           current.getDate() === targetDate.getDate();
 
         if (isSameDay) {
-          peopleAvailable = people.length;
+          peopleAvailable = Array.isArray(people) ? people.length : 0;
           break;
         }
       }
@@ -104,12 +105,21 @@ export default function AvailabilityCalendar({ data, max }) {
                 }
                 : { borderRadius: radius };
 
+              let isSelectedDay, isToday;
+
+              if (dateObj) {
+                isSelectedDay = new Date(selectedDay).toDateString() === dateObj[0].toDateString();
+                isToday = new Date().toDateString() === dateObj[0].toDateString();
+              }
+
               return (
                 <div
                   key={j}
                   className="w-10 h-10 flex items-center justify-center"
                   style={{
-                    backgroundColor: dateObj ? `rgba(31, 114, 230, ${dateObj[1] / max})` : "transparent",
+                    backgroundColor: dateObj ? `rgba(8, 67, 150, ${dateObj[1] / max})` : "transparent",
+                    border: dateObj && (isSelectedDay || isToday) ? "2px solid" : "",
+                    borderColor: isSelectedDay ? "#5EAA52" : isToday ? "#D57070" : "",
                     ...borderRadiusStyle,
                   }}
                 >

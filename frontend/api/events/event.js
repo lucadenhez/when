@@ -9,12 +9,16 @@ export const CreateEvent = async (eventData) => {
     await setDoc(docRef, { "schema": {}, "numPeople": 0, "eventData": {} });
 }
 
-export const GetEvent = async (eventData) => {
-    const docSnapshop = await getDoc(db, "events", eventData);
-    const doc = await getDoc();
+export const GetEvent = async (eventID) => {
+  const docRef = doc(db, "events", eventID);
+  const snapshot = await getDoc(docRef);
 
-    return doc;
-}
+  if (!snapshot.exists()) {
+    return null;
+  }
+
+  return snapshot.data();
+};
 
 export const EventExists = async (eventData) => {
     const docRef = db.collection("events").doc(eventData["code"]);

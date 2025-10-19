@@ -5,7 +5,7 @@ export default function ColorKey({ max }, ...props) {
         <p>1 person</p>
         <p>{`${max}+`}</p>
       </div>
-      <div className="h-2 rounded-xl bg-linear-to-r from-[#F5F5F5] to-[#1F72E6]" />
+      <div className="h-2 rounded-xl bg-linear-to-r from-[#F5F5F5] to-[#084396]" /> 
     </div>
   );
 }
