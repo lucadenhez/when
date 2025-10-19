@@ -87,7 +87,7 @@ export const EventExists = async (eventData) => {
     return docSnapshot.exists;
 }
 
-export const AddAvailability = async (eventData) => {
+export const AddAvailability = async (eventID) => {
     const calendar_tokens = localStorage.getItem('calendar_tokens')
     console.log(calendar_tokens)
 
@@ -101,9 +101,9 @@ export const AddAvailability = async (eventData) => {
                 },
                 body: JSON.stringify({
                     tokens: calendar_tokens,
-                    eventId: "eventcode0101",
+                    eventId: eventID,
                     endDate: "10-31-2025",
-                    time: eventData.time
+                    time: 90
                 })
             })
 

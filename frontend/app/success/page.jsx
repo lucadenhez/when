@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { AddAvailability } from "@/api/events/event";
 
 export default function Success() {
     const { push } = useRouter();
@@ -23,6 +24,7 @@ export default function Success() {
             console.log("STORED TOKENS")
             const whenID = sessionStorage.getItem("whenID");
             console.log(whenID)
+            await AddAvailability(whenID);
 
             push(`/${whenID}`);
 
