@@ -251,10 +251,13 @@ async def add_availability(request: Request):
 
     event_doc = db.collection("events").document(eventId)
     event_snap = event_doc.get()
+    if (not event_snap.exists):
+        print(eventId)
+    event_snap = event_snap.to_dict()
 
-    event = event_snap.to_dict().get("schema")
-    numPeople = event_snap.to_dict().get("numPeople")
-    eventData = event_snap.to_dict().get("eventData")
+    event = event_snap.get("schema")
+    numPeople = event_snap.get("numPeople")
+    eventData = event_snap.get("eventData")
 
     for day in unavailable:
         av = get_availability(unavailable[day], time)

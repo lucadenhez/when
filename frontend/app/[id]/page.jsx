@@ -15,7 +15,7 @@ import SuggestedDays from "../components/availability/SuggestedDays";
 import Loading from "../components/Loading";
 import { useEffect, useRef, useState } from "react";
 import TimeModal from "../components/availability/TimeModal";
-import { GetEvent, GetTime } from "../../api/events/event";
+import { AddAvailability, GetEvent, GetTime } from "../../api/events/event";
 import CheckConnections from "../components/authentication/CheckConnections"
 
 export default function Availability() {
@@ -34,6 +34,7 @@ export default function Availability() {
 
   useEffect(() => {
     const fetchEvent = async () => {
+      //await AddAvailability(whenID);
       const data = await GetEvent(whenID);
       console.log("Fetched event:", data);
 
