@@ -52,12 +52,19 @@ async def verify_token(request: Request):
 @app.get("/oauth2callback")
 async def oauth2callback(request: Request):
     code = request.query_params.get("code")
-    return RedirectResponse(url=f"http://localhost:3000/success?code={code}")
+    whenID = request.query_params.get("whenID")
+
+    print(whenID)
+
+    return RedirectResponse(url=f"http://localhost:3000/success?code={code}&whenID={whenID}")
 
 @app.post("/store_google_tokens")
 async def setup_calendar(request: Request):
     body = await request.json()
     code = body.get("code")
+    whenID = request.query_params.get("whenID")
+
+    print(whenID)
 
     if not code:
         raise HTTPException(status_code=400, detail="Missing uid or code")
@@ -69,10 +76,11 @@ async def setup_calendar(request: Request):
                 "client_secret": GOOGLE_CLIENT_SECRET,
                 "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                 "token_uri": "https://oauth2.googleapis.com/token",
+                "whenID": whenID
             }
         },
         scopes=["https://www.googleapis.com/auth/calendar"],
-        redirect_uri="http://localhost:8000/oauth2callback"
+        redirect_uri=f"http://localhost:8000/oauth2callback"
     )
 
     flow.fetch_token(code=code)
