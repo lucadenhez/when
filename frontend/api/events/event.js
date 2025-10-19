@@ -10,11 +10,10 @@ export const CreateEvent = async (eventData) => {
 }
 
 export const GetEvent = async (eventData) => {
-    const docRef = doc(db, "events", eventData["code"])
+    const docSnapshop = await getDoc(db, "events", eventData);
+    const doc = await getDoc();
 
-    const doc = (await getDoc(docRef)).toJSON();
-
-    return doc
+    return doc;
 }
 
 export const EventExists = async (eventData) => {
@@ -24,7 +23,39 @@ export const EventExists = async (eventData) => {
     return docSnapshot.exists;
 }
 
-export const AddAvailability = async () => {
+export const GetTime = (eventData) => {
+    const timePeriod = {}
+    const minutes = ["00", "15", "30", "45"]
+
+    eventData.map((val, key) => {
+        const days = {}
+
+        for (let index = 0; index < 24; index++) {
+            const s = index.toString();
+            if (index < 10) s = "0" + s;
+
+            for (let m = 0; m < minutes.length; m++) {
+                count[s + m] = 0
+            }
+        }
+
+        const test = "";
+        test.su
+
+        val.forEach(person => {
+            person.forEach(time => {
+                startH = time.substring(0,2)
+                endH = time.substring(5,7)
+                startM = time.substring(2,4)
+                endM = time.substring(7)
+
+                
+            });
+        });
+    })
+}
+
+export const AddAvailability = async (eventData) => {
     const calendar_tokens = localStorage.getItem('calendar_tokens')
     console.log(calendar_tokens)
 
@@ -39,7 +70,8 @@ export const AddAvailability = async () => {
                 body: JSON.stringify({
                     tokens: calendar_tokens,
                     eventId: "eventcode0101",
-                    endDate: "10-31-2025"
+                    endDate: "10-31-2025",
+                    time: eventData.time
                 })
             })
 
