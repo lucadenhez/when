@@ -16,6 +16,7 @@ import Loading from "../components/Loading";
 import { useEffect, useRef, useState } from "react";
 import DayModal from "../components/availability/DayModal";
 import { GetEvent, GetTime } from "../../api/events/event";
+import CheckConnections from "../components/authentication/CheckConnections"
 
 export default function Availability() {
   const whenID = useParams().id;

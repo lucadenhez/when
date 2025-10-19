@@ -8,7 +8,7 @@ import { userInfo } from 'os';
 
 //dotenv.config();
 
-export const connectGoogleCalendar = async () => {
+export const connectGoogleCalendar = async (router) => {
     const authorized = await isAuthorizedForCalendar();
 
 
@@ -18,7 +18,7 @@ export const connectGoogleCalendar = async () => {
         const REDIRECT_URI = "http://localhost:8000/oauth2callback";
         const SCOPES = ["https://www.googleapis.com/auth/calendar"];
 
-        const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=${SCOPES[0]}&access_type=offline&prompt=consent&whenID=${whenID}`;
+        const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=${SCOPES[0]}&access_type=offline&prompt=consent`;
         console.log(authUrl);
         router.push(authUrl);
     }

@@ -6,10 +6,11 @@ import { connectGoogleCalendar } from "@/api/google_plugins/calendar";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-
 export default function UploadCalendar() {
-  const whenID = useParams().id;
   const router = useRouter();
+
+  const whenID = useParams().id;
+  sessionStorage.setItem("whenID", whenID);
 
   const calendar_upload_choices = [
     {
@@ -17,8 +18,7 @@ export default function UploadCalendar() {
       Title: "Google Calendar",
       Description: "Gmail, Google Tasks, etc.",
       Image: "/images/icons/calendars/google_cal.svg",
-      Function: () => connectGoogleCalendar(whenID, router),
-      whenID: whenID
+      Function: () => connectGoogleCalendar(router),
     },
     {
       Id: 2,
@@ -26,7 +26,6 @@ export default function UploadCalendar() {
       Description: "iCloud",
       Image: "/images/icons/calendars/apple_cal.svg",
       Function: () => { },
-      whenID: whenID
     },
     {
       Id: 3,
@@ -34,7 +33,6 @@ export default function UploadCalendar() {
       Description: "Microsoft 365, Office",
       Image: "/images/icons/calendars/outlook_cal.svg",
       Function: () => { },
-      whenID: whenID
     },
     {
       Id: 4,
@@ -42,7 +40,6 @@ export default function UploadCalendar() {
       Description: "Take a photo of your physical planner",
       Image: "/images/icons/calendars/scan_planner.png",
       Function: () => { },
-      whenID: whenID
     },
 
     {
@@ -51,7 +48,6 @@ export default function UploadCalendar() {
       Description: "Enter your availability manually",
       Image: "/images/icons/calendars/no_planner.png",
       Function: () => { },
-      whenID: whenID
     },
   ];
 
@@ -74,7 +70,7 @@ export default function UploadCalendar() {
             </div>
           </motion.div>
           <div className="space-y-3 max-w-[80%] m-auto">
-            {calendar_upload_choices.map((calendar_choice: CalendarChoice) => (
+            {calendar_upload_choices.map((calendar_choice) => (
               <CalendarUpload
                 key={calendar_choice.Title}
                 {...calendar_choice}
