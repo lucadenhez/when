@@ -8,7 +8,7 @@ const example_schema = {
           "lastName": "Denhez",
           "availabileTimes": [
             "0715-1230",
-            "1545-1700"
+            "1545-2400"
           ]
         }
       ]
@@ -21,12 +21,21 @@ const example_schema = {
           "lastName": "Denhez",
           "availabileTimes": [
             "0715-1230",
-            "1545-1700"
+            "1545-1700",
+            "0000-"
           ]
         }
       ]
     }
   ]
 };
+
+const event = {
+  "schema": example_schema,
+  "numPeople": 5,
+  "eventData": {
+    
+  }
+}
 
 export default example_schema;

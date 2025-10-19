@@ -6,13 +6,14 @@ export default function Success() {
     const code = new URLSearchParams(window.location.search).get("code");
     const storeTokens = async () => {
         try {
-            const response = fetch("http://localhost:8000/store_google_tokens", {
+            const response = await fetch("http://localhost:8000/store_google_tokens", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ code }),
             });
-
-            const data = response.data;
+            
+            const data = await response.json();
+            console.log(data);
 
             localStorage.setItem('calendar_tokens', JSON.stringify(data));
             console.log("STORED TOKENS")

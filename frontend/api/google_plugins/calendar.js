@@ -8,6 +8,7 @@ import { userInfo } from 'os';
 
 export const connectGoogleCalendar = async () => {
 
+    localStorage.removeItem('calendar_tokens');
     const authorized = await isAuthorizedForCalendar();
 
     if (!authorized) {
@@ -48,6 +49,7 @@ export const isAlreadyAddedToCalendar = async () => {
 export const isAuthorizedForCalendar = async () => {
 
     const tokens = localStorage.getItem('calendar_tokens');
+    console.log(tokens)
 
     return tokens != null;
 }
