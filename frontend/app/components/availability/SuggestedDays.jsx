@@ -7,7 +7,7 @@ export default function SuggestedDays({ dates, swiperRef, setSelectedDay }) {
   const [selected, setSelected] = useState(null);
 
   return (
-    <div className="flex flex-col gap-3 mt-3 ml-3">
+    <div className="flex flex-col gap-3 mt-3 ml-3 w-full">
       {dates.map((date, index) => (
         <div key={index} className="relative">
           <Image

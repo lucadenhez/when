@@ -44,7 +44,7 @@ export default function AvailabilityCalendar({ data, max, selectedDay }) {
           current.getDate() === targetDate.getDate();
 
         if (isSameDay) {
-          peopleAvailable = Array.isArray(people) ? people.length : 0;
+          peopleAvailable = people.availableCount;
           break;
         }
       }
@@ -89,21 +89,9 @@ export default function AvailabilityCalendar({ data, max, selectedDay }) {
         {weeks.map((week, i) => (
           <div key={i} className="grid grid-cols-7 gap-0">
             {week.map((dateObj, j) => {
-              // determine if this cell and its immediate horizontal neighbors are selected
               const selected = dateObj && dateObj[1] > 0;
               const leftSelected = j > 0 && week[j - 1] && week[j - 1][1] > 0;
               const rightSelected = j < 6 && week[j + 1] && week[j + 1][1] > 0;
-
-              // approximate tailwind 'rounded-md' in px
-              const radius = 7;
-              const borderRadiusStyle = selected
-                ? {
-                  borderTopLeftRadius: leftSelected ? 0 : radius,
-                  borderBottomLeftRadius: leftSelected ? 0 : radius,
-                  borderTopRightRadius: rightSelected ? 0 : radius,
-                  borderBottomRightRadius: rightSelected ? 0 : radius,
-                }
-                : { borderRadius: radius };
 
               let isSelectedDay, isToday;
 
@@ -115,12 +103,11 @@ export default function AvailabilityCalendar({ data, max, selectedDay }) {
               return (
                 <div
                   key={j}
-                  className="w-10 h-10 flex items-center justify-center"
+                  className="w-10 h-10 flex items-center justify-center rounded-md"
                   style={{
-                    backgroundColor: dateObj ? `rgba(8, 67, 150, ${dateObj[1] / max})` : "transparent",
-                    border: dateObj && (isSelectedDay || isToday) ? "2px solid" : "",
-                    borderColor: isSelectedDay ? "#5EAA52" : isToday ? "#D57070" : "",
-                    ...borderRadiusStyle,
+                    backgroundColor: isSelectedDay ? "#5EAA52" : dateObj ? `rgba(8, 67, 150, ${dateObj[1] / max})` : "transparent",
+                    border: dateObj && isToday ? "3px solid" : "",
+                    borderColor: isToday ? "#D57070" : ""
                   }}
                 >
                   <p style={{ color: dateObj && dateObj[1] / max > 0.5 ? "#ffffff" : "#000000" }}>
