@@ -118,7 +118,7 @@ export default function DurationAndDate({
         latestDate: latestDate,
       },
     });
-    setEventURL(`whenwhere.us/${code}`);
+    setEventURL(`when-three.vercel.app/${code}`);
     console.log(eventURL);
     setQRCodeModal(true);
     setRandomCode(code);
