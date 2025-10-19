@@ -68,21 +68,19 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "https://lucadenhez.com/images/icons/when_icon.png",
+        url: "images/metadata/text_metadata.png",
         width: 1200,
-        height: 1200,
-      },
-    ],
+        height: 627,
+        alt: "iMessage Cover"
+      }
+    ]
   },
-  robots: {
-    index: true,
-    follow: false,
-    nocache: true,
-    googleBot: {
-      index: true,
-      follow: false,
-    },
-  },
+  twitter: {
+    card: "summary_large_image",
+    title: "When",
+    description: "Planning is hard with lots of people. Let's make it easier!",
+    images: ["images/metadata/text_metadata.png"]
+  }
 };
 
 export default function RootLayout({
