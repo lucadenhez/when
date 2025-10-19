@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 
-export default function SuggestedDays({ dates, swiperRef }) {
+export default function SuggestedDays({ dates, swiperRef, setSelectedDay }) {
   const [selected, setSelected] = useState(null);
 
   return (
@@ -23,12 +23,14 @@ export default function SuggestedDays({ dates, swiperRef }) {
             style={{ borderColor: index === selected ? "#5EAA52" : "" }}
             onClick={() => {
               setSelected(index);
+              setSelectedDay(date.day); // troubleshoot
               setTimeout(() => {
                 swiperRef.current?.slidePrev();
+                // open modal here
               }, 250);
             }}
           >
-            <p>{`${date.day} @ ${date.time}`}</p>
+            <p>{`${date.prettyDay} @ ${date.time}`}</p>
           </button>
         </div>
       ))}

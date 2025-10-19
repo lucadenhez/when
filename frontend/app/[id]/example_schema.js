@@ -6,11 +6,16 @@ const example_schema = {
         {
           "firstName": "Luca",
           "lastName": "Denhez",
+          "unavailableTimes": [
+            "0000-0715",
+            "1231-1544",
+            "1701-2359"
+          ],
           "availabileTimes": [
             "0715-1230",
             "1545-1700"
           ]
-        },      
+        },
       ]
     },
     {

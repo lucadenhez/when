@@ -13,11 +13,12 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import SuggestedDays from "../components/availability/SuggestedDays";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 export default function Availability() {
   const whenID = useParams().id;
   const swiperRef = useRef(null);
+  const [selectedDay, setSelectedDay] = useState("");
 
 
 
@@ -27,18 +28,29 @@ export default function Availability() {
 
   return (
     <div className="flex flex-col items-center h-screen justify-between">
-      <div className="flex flex-col items-center gap-12">
-        <div className="mt-20 text-center">
+      <div className="flex flex-col items-center">
+        <div className="mt-20 text-center mb-12">
           <p className="font-semibold text-3xl">Thanks!</p>
           <p className="text-2xl text-black/50">When works best for you?</p>
         </div>
-        <div className="w-1/2">
+        <div className="w-full mb-7">
           <ColorKey min={1} max={4} />
+        </div>
+        <div className="w-full">
+          <div className="flex justify-center gap-10 items-center">
+            <div className="flex justify-between items-center gap-3">
+              <div className="w-3 h-3 rounded-full bg-[#5EAA52]" />
+              <p>Selected Days</p>
+            </div>
+            <div className="flex justify-between items-center gap-3">
+              <div className="w-3 h-3 rounded-full bg-[#D57070]" />
+              <p>Today</p>
+            </div>
+          </div>
         </div>
       </div>
 
-
-      <div className="w-full max-w-[90vw]">
+      <div className="w-full max-w-full sm:max-w-1/3">
         <Swiper
           modules={[Pagination, Scrollbar, A11y]}
           spaceBetween={30}
@@ -49,15 +61,21 @@ export default function Availability() {
           onSwiper={(swiper) => (swiperRef.current = swiper)}
         >
           <SwiperSlide className="flex justify-center">
-            <AvailabilityCalendar data={example_schema} min={1} max={4} />
+            <AvailabilityCalendar
+              data={example_schema}
+              min={1}
+              max={4}
+              selectedDay={selectedDay}
+            />
           </SwiperSlide>
           <SwiperSlide className="flex justify-center">
             <SuggestedDays dates={[
-              { "day": "Fri, Oct 24", "time": "5pm" },
-              { "day": "Wed, Oct 22", "time": "1pm" },
-              { "day": "Mon, Oct 20", "time": "10am" }
+              { "day": "10-24-2025", "prettyDay": "Fri, Oct 24", "time": "17:15" },
+              { "day": "10-20-2025", "prettyDay": "Mon, Oct 20", "time": "10:00" },
+              { "day": "10-27-2025", "prettyDay": "Mon, Oct 27", "time": "19:30" }
             ]}
               swiperRef={swiperRef}
+              setSelectedDay={setSelectedDay}
             />
           </SwiperSlide>
         </Swiper>
