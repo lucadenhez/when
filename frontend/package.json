@@ -25,7 +25,9 @@
     "react-dom": "19.1.0",
     "react-hook-form": "^7.65.0",
     "react-phone-number-input": "^3.4.12",
+    "shadcn": "^3.4.2",
     "tailwind-merge": "^3.3.1",
+    "tailwindcss-animate": "^1.0.7",
     "zod": "^4.1.12"
   },
   "devDependencies": {
