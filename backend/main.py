@@ -9,6 +9,7 @@ from google_auth_oauthlib.flow import Flow
 import firebase_admin
 from io import BytesIO
 import os
+from collections import defaultdict
 from dotenv import load_dotenv
 import io
 import datetime
@@ -101,7 +102,9 @@ def get_availability(service, endDate):
     calendar_list = service.calendarList().list().execute()
     calendar_ids = [item['id'] for item in calendar_list.get('items', [])]
 
-    availability = {}
+    availability = defaultdict()
+    inverse = defaultdict()
+    add = datetime.timedelta(days=1)
     
     for id in calendar_ids:
         result = service.events().list(
@@ -118,41 +121,74 @@ def get_availability(service, endDate):
             end_data = event.get('end', {})
 
             if 'dateTime' in start_data:
-                start_time = datetime.datetime.fromisoformat(start_data['dateTime'])
-                end_time = datetime.datetime.fromisoformat(end_data['dateTime'])
+                start_dt = datetime.datetime.fromisoformat(start_data['dateTime'])
+                end_dt = datetime.datetime.fromisoformat(end_data['dateTime'])
+
+                current_dt = start_dt
+                while current_dt.date() <= end_dt.date():
+                    date_str = current_dt.strftime('%m-%d-%Y')
+
+                    start_str = current_dt.strftime('%H%M') if current_dt.date() == start_dt.date() else "0000"
+                    if current_dt.date() == end_dt.date():
+                         
+                            end_str = end_dt.strftime('%H%M')
+                       
+                            if end_str == "0000" and end_dt.date() > start_dt.date():
+                            
+                                prev_day_str = (current_dt - add).strftime('%m-%d-%Y')
+                          
+                                for i, time in enumerate(availability[prev_day_str]):
+                                    if time.endswith("-0000"):
+                                        availability[prev_day_str][i] = time.replace("-0000", "-2400")
+                                break
+                    else:
+                        end_str = "2400"
+
+                    availability[date_str].append(f"{start_str}-{end_str}")
+                    current_dt = (current_dt + add).replace(hour=0, minute=0)
     
             elif 'date' in start_data:
-                start_time = datetime.date.fromisoformat(start_data['date'])
-                end_time = datetime.date.fromisoformat(end_data['date'])
+                start_date = datetime.date.fromisoformat(start_data['date'])
+                    # Google's end date is EXCLUSIVE, so subtract 1 day
+                end_date = datetime.date.fromisoformat(end_data['date']) - add
+                    
+                current_date = start_date
+                while current_date <= end_date:
+                    date_str = current_date.strftime('%m-%d-%Y')
+                    availability[date_str].append("0000-2400")
+                    current_date += add
         
             else:
-        
                 continue
 
-            add = datetime.timedelta(days=1)
+            # start_time = start_time.date() if isinstance(start_time, datetime.datetime) else start_time
 
-            start = start_time.strftime('%H%M')
-            end = end_time.strftime('%H%M')
-            start_date = start_time.strftime('%m-%d-%Y')
+            # end_time = end_time.date() if isinstance(end_time, datetime.datetime) else end_time
 
-            if (start_date not in availability):
-                availability[start_date] = []
+            # add = datetime.timedelta(days=1)
 
-            if (start_time.date() == end_time.date()):
-                availability[start_date].add({f"{start}-{end}"})
-            else:
-                availability[start_date].add(f"{start}-2400")
-                while (start_time.date() != end_time.date()):
-                    start_time = start_time + add
-                    date = start_time.strftime('%m-%d-%Y')
-                    if (date not in availability):
-                        availability[date] = []
-                    if (start_time.date() == end_time.date()):
-                        availability[date].add(f"0000-{end}")
-                        break
-                    else:
-                        availability[date].add(f"0000-2400")
-    return availability
+            # start = start_time.strftime('%H%M')
+            # end = end_time.strftime('%H%M')
+            # start_date = start_time.strftime('%m-%d-%Y')
+
+            # if (start_date not in availability):
+            #     availability[start_date] = []
+
+            # if (start_time == end_time):
+            #     availability[start_date].append(f"{start}-{end}")
+            # else:
+            #     availability[start_date].append(f"{start}-2400")
+            #     while (start_time != end_time):
+            #         start_time = start_time + add
+            #         date = start_time.strftime('%m-%d-%Y')
+            #         if (date not in availability):
+            #             availability[date] = []
+            #         if (start_time == end_time):
+            #             availability[date].append(f"0000-{end}")
+            #             break
+            #         else:
+            #             availability[date].append(f"0000-2400")
+    return dict(availability)
 
 
 @app.post("/add_availability") 
@@ -187,15 +223,28 @@ async def add_availability(request: Request):
 
     availability = get_availability(service, endDate)
 
-    event_doc = db.collection("events").document(eventId).to_dict()
-    event = event_doc["schema"]
+    event_doc = db.collection("events").document(eventId)
+    event_snap = event_doc.get()
+
+    event = event_snap.to_dict().get("schema")
+    numPeople = event_snap.to_dict().get("numPeople")
+
+    # if not event:
+    #  raise HTTPException(status_code=400, detail="Event data is missing the 'schema' field")
 
     for day in availability:
+        print(day)
         if (day not in event):
             event[day] = []
-        event[day].add({"firstName": firstName, "lastName": lastName, "availableTimes": availability[day]})
+        event[day].append({"firstName": firstName, "lastName": lastName, "availableTimes": availability[day]})
 
-    db.collection("events").document(eventId).set({"schema": event, "maxPeople": event_doc["numPeople"] + 1})
+    print(type(event))
+    print(json.dumps(event, indent=4))
+
+    print("HERE")
+    db.collection("events").document(eventId).set({"schema": event, "numPeople": numPeople + 1})
+
+    print("MADE IT")
         
 
 
