@@ -4,9 +4,9 @@ import { db } from '../firebase/firebase';
 
 export const CreateEvent = async (eventData) => {
 
-    const docRef = doc(db, "events", eventData["code"]);
+    const docRef = doc(db, "events", eventData.code);
 
-    await setDoc(docRef, { "schema": {}, "numPeople": 0, "eventData": eventData["data"], "bestTimes": [] });
+    await setDoc(docRef, { "schema": {}, "numPeople": 0, "eventData": eventData.data, "bestTimes": [] });
 }
 
 export const GetEvent = async (eventID) => {

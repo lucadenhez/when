@@ -7,17 +7,6 @@ import { useState } from "react";
 import QRCodeDisplay from "../qrCodeDisplay";
 import Link from "next/link";
 
-function generateRandomCode(): string {
-  let result = "";
-  const upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  for (let i = 0; i < 6; i++) {
-    result += upperCaseLetters.charAt(
-      Math.floor(Math.random() * upperCaseLetters.length)
-    );
-  }
-  return result;
-}
-
 interface DurationAndDateProps {
   eventName: string;
   shortName: string;
@@ -68,6 +57,17 @@ export default function DurationAndDate({
     return "";
   };
 
+  const generateRandomCode = () => {
+    let result = "";
+    const upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    for (let i = 0; i < 6; i++) {
+      result += upperCaseLetters.charAt(
+        Math.floor(Math.random() * upperCaseLetters.length)
+      );
+    }
+    return result;
+  }
+
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // we want the date to go into the database MM-DD-YYYY
     const dateValue = e.target.value;
@@ -104,10 +104,10 @@ export default function DurationAndDate({
       return;
     }
     setSubmitted(true);
-    setRandomCode(generateRandomCode());
-    console.log(`Random Code: ${randomCode}`);
+    const code = generateRandomCode();
+    console.log(`Random Code: ${code}`);
     CreateEvent({
-      code: randomCode,
+      code: code,
       data: {
         eventName: eventName,
         shortName: shortName,
@@ -118,9 +118,10 @@ export default function DurationAndDate({
         latestDate: latestDate,
       },
     });
-    setEventURL(`whenwhere.us/${randomCode}`);
+    setEventURL(`whenwhere.us/${code}`);
     console.log(eventURL);
     setQRCodeModal(true);
+    setRandomCode(code);
     // router.push(`/connect/${randomCode}`);
   };
 
