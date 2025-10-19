@@ -46,7 +46,10 @@ export default function Availability() {
             <AvailabilityCalendar data={example_schema} min={1} max={4} />
           </SwiperSlide>
           <SwiperSlide className="flex justify-center">
-            <SuggestedDays />
+            <div className="h-full">
+              <SuggestedDays />
+            </div>
+
           </SwiperSlide>
         </Swiper>
       </div>
