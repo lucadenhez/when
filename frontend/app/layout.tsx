@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./globals.css"
+import "./globals.css";
+import { auth } from "../api/firebase/firebase";
+import { redirect } from "next/navigation";
+import Auth from "./components/authentication/Auth";
+import { Toaster } from "sonner";
 
 const sanFranciscoPro = localFont({
   src: [
@@ -81,7 +85,6 @@ export const metadata: Metadata = {
   },
 };
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -92,10 +95,9 @@ export default function RootLayout({
       <head>
         <link rel="icon" type="image/png" href="images/icons/when_icon.png" />
       </head>
-      <body
-        className={`${sanFranciscoPro.variable} antialiased`}
-      >
-        {children}
+      <body className={`${sanFranciscoPro.variable} antialiased`}>
+        <Auth>{children}</Auth>
+        <Toaster position="top-center" />
       </body>
     </html>
   );

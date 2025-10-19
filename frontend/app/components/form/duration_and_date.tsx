@@ -52,6 +52,7 @@ export default function DurationAndDate({
   const router = useRouter();
 
   const [eventURL, setEventURL] = useState("");
+  const [randomCode, setRandomCode] = useState("");
   const [qrCodeModal, setQRCodeModal] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
 
@@ -103,7 +104,7 @@ export default function DurationAndDate({
       return;
     }
     setSubmitted(true);
-    let randomCode = generateRandomCode();
+    setRandomCode(generateRandomCode());
     console.log(`Random Code: ${randomCode}`);
     CreateEvent({
       code: randomCode,
@@ -135,31 +136,41 @@ export default function DurationAndDate({
               <label className="block text-sm font-medium">
                 Hours <span className="text-red-500">*</span>
               </label>
-              <select
-                className="border border-slate-300 focus:border-slate-900 text-sm p-2 w-full rounded-md transition-all duration-200"
-                value={hours}
-                onChange={(e) => setHours(parseInt(e.target.value))}
-              >
-                {Array.from({ length: 10 }, (_, i) => (
-                  <option key={i} value={i}>
-                    {i}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                  className="border border-slate-300 text-sm p-2 w-full rounded-md transition-all duration-200"
+                  value={hours}
+                  onChange={(e) => setHours(parseInt(e.target.value))}
+                >
+                  {Array.from({ length: 10 }, (_, i) => (
+                    <option key={i} value={i}>
+                      {i}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
             <div className="space-y-1 w-full">
               <label className="block text-sm font-medium">
                 Minutes <span className="text-red-500">*</span>
               </label>
               <select
-                className="border border-slate-300 focus:border-slate-900 text-sm p-2 w-full rounded-md transition-all duration-200"
+                className="border border-slate-300 text-sm p-2 w-full rounded-md transition-all duration-200"
                 value={minutes}
                 onChange={(e) => setMinutes(parseInt(e.target.value))}
               >
-                <option value={0}>0</option>
-                <option value={15}>15</option>
-                <option value={30}>30</option>
-                <option value={45}>45</option>
+                <option className="" value={0}>
+                  0
+                </option>
+                <option className="" value={15}>
+                  15
+                </option>
+                <option className="" value={30}>
+                  30
+                </option>
+                <option className="" value={45}>
+                  45
+                </option>
               </select>
             </div>
           </div>
@@ -221,7 +232,7 @@ export default function DurationAndDate({
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ scale: 0 }}
-                className="w-[90%] bg-white flex justify-center items-center p-10 rounded-xl shadow-xl"
+                className="w-[85%] bg-white flex justify-center items-center p-10 rounded-xl shadow-xl"
               >
                 <div className="text-center space-y-5">
                   <h1 className="text-md font-bold">
@@ -250,13 +261,13 @@ export default function DurationAndDate({
                         />
                       </svg>
                     </button>
-                    <Link href="../../connect">
+                    <Link href={`../../${randomCode}`}>
                       <motion.button
-                        className="text-lg font-semibold bg-gradient-to-r from-blue-300 via-blue-500 to-blue-300 py-2 px-4 rounded-full text-white"
+                        className="text-lg font-semibold bg-gradient-to-r from-blue-300 via-blue-500 to-blue-300 py-3 px-5 rounded-full text-white"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
-                        Connect your calendar
+                        Add your availability
                       </motion.button>
                     </Link>
                   </div>

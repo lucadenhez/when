@@ -21,7 +21,7 @@ const MovingButterfly = ({ containerRef }: Props) => {
 
 const useIsMobile = (breakpoint = 768) => {
   // usually 768 pixels for phone size
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
