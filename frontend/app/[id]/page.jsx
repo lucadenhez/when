@@ -21,7 +21,7 @@ export default function Availability() {
   const whenID = useParams().id;
   const swiperRef = useRef(null);
   const [selectedDay, setSelectedDay] = useState("");
-  const modalOpen = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [event, setEvent] = useState(null);
 
   const { push } = useRouter();
@@ -50,6 +50,7 @@ export default function Availability() {
 
   return (
     <div>
+      <DayModal isOpen={modalOpen} setOpen={setModalOpen} />
       <div className="flex flex-col items-center h-screen justify-between">
         <div className="flex flex-col items-center">
           <div className="mt-20 text-center mb-12">

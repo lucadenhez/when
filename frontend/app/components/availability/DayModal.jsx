@@ -1,7 +1,7 @@
 import { Sheet } from 'react-modal-sheet';
 import { useState } from 'react';
 
-export default function DayModal({ isOpen }) {
+export default function DayModal({ isOpen, setOpen }) {
   return (
     <>
       <Sheet isOpen={isOpen} onClose={() => setOpen(false)}>
