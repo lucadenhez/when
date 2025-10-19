@@ -23,14 +23,14 @@ export default function SuggestedDays({ dates, swiperRef, setSelectedDay }) {
             style={{ borderColor: index === selected ? "#5EAA52" : "" }}
             onClick={() => {
               setSelected(index);
-              setSelectedDay(date.day); // troubleshoot
+              setSelectedDay(date.date); // troubleshoot
               setTimeout(() => {
                 swiperRef.current?.slidePrev();
                 // open modal here
               }, 500);
             }}
           >
-            <p>{`${date.prettyDay} @ ${date.time}`}</p>
+            <p>{`${date.displayDate} @ ${date.displayTime}`}</p>
           </button>
         </div>
       ))}

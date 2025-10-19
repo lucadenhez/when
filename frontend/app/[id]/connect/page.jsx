@@ -1,41 +1,45 @@
 "use client";
 
 import { motion } from "motion/react";
-import { AuroraBackground } from "@/components/ui/shadcn-io/aurora-background";
-import CalendarUpload from "../components/calendar_upload";
-
-interface CalendarChoice {
-  Id: number;
-  Title: string;
-  Description: string;
-  Image: string;
-}
+import CalendarUpload from "../../components/calendar_upload";
+import { connectGoogleCalendar } from "@/api/google_plugins/calendar";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function UploadCalendar() {
-  const calendar_upload_choices: CalendarChoice[] = [
+  const router = useRouter();
+
+  const whenID = useParams().id;
+  sessionStorage.setItem("whenID", whenID);
+
+  const calendar_upload_choices = [
     {
       Id: 1,
       Title: "Google Calendar",
       Description: "Gmail, Google Tasks, etc.",
       Image: "/images/icons/calendars/google_cal.svg",
+      Function: () => connectGoogleCalendar(router),
     },
     {
       Id: 2,
       Title: "Apple Calendar",
       Description: "iCloud",
       Image: "/images/icons/calendars/apple_cal.svg",
+      Function: () => { },
     },
     {
       Id: 3,
       Title: "Outlook Calendar",
       Description: "Microsoft 365, Office",
       Image: "/images/icons/calendars/outlook_cal.svg",
+      Function: () => { },
     },
     {
       Id: 4,
       Title: "Scan your planner",
       Description: "Take a photo of your physical planner",
       Image: "/images/icons/calendars/scan_planner.png",
+      Function: () => { },
     },
 
     {
@@ -43,6 +47,7 @@ export default function UploadCalendar() {
       Title: "I don't have a calendar",
       Description: "Enter your availability manually",
       Image: "/images/icons/calendars/no_planner.png",
+      Function: () => { },
     },
   ];
 
@@ -65,7 +70,7 @@ export default function UploadCalendar() {
             </div>
           </motion.div>
           <div className="space-y-3 max-w-[80%] m-auto">
-            {calendar_upload_choices.map((calendar_choice: CalendarChoice) => (
+            {calendar_upload_choices.map((calendar_choice) => (
               <CalendarUpload
                 key={calendar_choice.Title}
                 {...calendar_choice}

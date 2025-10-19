@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
-import { Toaster } from "sonner";
+import "./globals.css"
 
 const sanFranciscoPro = localFont({
   src: [
@@ -82,6 +81,7 @@ export const metadata: Metadata = {
   },
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -92,8 +92,9 @@ export default function RootLayout({
       <head>
         <link rel="icon" type="image/png" href="images/icons/when_icon.png" />
       </head>
-      <body className={`${sanFranciscoPro.variable} antialiased`}>
-        <Toaster position="top-center" />
+      <body
+        className={`${sanFranciscoPro.variable} antialiased`}
+      >
         {children}
       </body>
     </html>

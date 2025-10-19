@@ -6,19 +6,49 @@ export const CreateEvent = async (eventData) => {
 
     const docRef = doc(db, "events", eventData["code"]);
 
-    await setDoc(docRef, { "schema": {}, "numPeople": 0, "eventData": eventData["data"] });
+    await setDoc(docRef, { "schema": {}, "numPeople": 0, "eventData": eventData["data"], "bestTimes": [] });
 }
 
 export const GetEvent = async (eventID) => {
-  const docRef = doc(db, "events", eventID);
-  const snapshot = await getDoc(docRef);
+    const docRef = doc(db, "events", eventID);
+    const snapshot = await getDoc(docRef);
 
-  if (!snapshot.exists()) {
-    return null;
-  }
+    if (!snapshot.exists()) {
+        return null;
+    }
 
-  return snapshot.data();
+    return snapshot.data();
 };
+
+export const SelectBestTime = async (eventID, date, time) => {
+    const data = GetEvent(eventID);
+    const docRef = doc(db, "events", eventID);
+
+    var parsed = Date.parse(date)
+    parsed.hours = Math.parse(time.substring(0, 2))
+    parsed.minutes = Math.parse(time.substring(2))
+
+    data.bestTimes.push(parsed.toString());
+
+    await setDoc(docRef, data);
+}
+
+export const GetBestTime = async (eventID) => {
+    const docRef = doc(db, "events", eventID);
+    const snapshot = await getDoc(docRef);
+
+    if (!snapshot.exists()) {
+        return null;
+    }
+
+    const data = snapshot.data();
+    const bestTimes = data.bestTimes;
+    const numPeople = data.numPeople;
+    
+    if (bestTimes.length == numPeople) {
+        return Date.parse(bestTimes[0]).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    }
+}
 
 export const EventExists = async (eventData) => {
     const docRef = db.collection("events").doc(eventData["code"]);
@@ -67,21 +97,22 @@ const minutesToTime = (minutes) => {
     const m = minutes % 60;
     const hours = h.toString().padStart(2, '0');
     const mins = m.toString().padStart(2, '0');
-    return `${hours}:${mins}`;
+    return `${hours}${mins}`;
 };
 
 export const GetTime = (eventData, event) => {
     const eventDuration = (eventData.hours || 0) * 60 + (eventData.minutes || 0);
 
-    const allPossibleSlots = [];
+    const allAvailableBlocks = [];
+    const eventSchema = event.schema || {};
 
-    if (event && event.availableDays) {
-        event.availableDays.forEach(dayObject => {
-            const date = Object.keys(dayObject)[0];
-            const dayInfo = dayObject[date];
+    for (const date in eventSchema) {
+        if (Object.hasOwnProperty.call(eventSchema, date)) {
+            const dayInfo = eventSchema[date];
             const people = dayInfo.people || [];
+            const totalPeople = people.length;
 
-            if (people.length === 0) return;
+            if (totalPeople === 0) continue;
 
             const timelineEvents = [];
             people.forEach(person => {
@@ -94,34 +125,32 @@ export const GetTime = (eventData, event) => {
                     }
                 });
             });
-            
-            if (timelineEvents.length === 0) return;
+
+            if (timelineEvents.length === 0) continue;
 
             timelineEvents.sort((a, b) => {
                 if (a.time !== b.time) return a.time - b.time;
                 return a.type === 'start' ? -1 : 1;
             });
 
-            let maxAttendeesInSlot = 0;
             let concurrentlyAvailablePeople = 0;
-            let lastTime = timelineEvents[0].time;
+            let lastTime = 0;
 
             timelineEvents.forEach(point => {
                 const currentTime = point.time;
 
                 if (currentTime > lastTime) {
                     const slotDuration = currentTime - lastTime;
-                    
+
                     if (concurrentlyAvailablePeople > 0 && slotDuration >= eventDuration) {
-                        const potentialStarts = currentTime - lastTime - eventDuration;
-                        for (let i = 0; i <= potentialStarts; i++) {
-                             allPossibleSlots.push({
-                                date: date,
-                                prettyDate: (newDate.parse(date)).toDateString(),
-                                startTime: minutesToTime(lastTime + i),
-                                attendees: concurrentlyAvailablePeople,
-                            });
-                        }
+                        allAvailableBlocks.push({
+                            date: date,
+                            startTime: minutesToTime(lastTime),
+                            endTime: minutesToTime(currentTime),
+                            attendees: concurrentlyAvailablePeople,
+                            totalPeople: totalPeople,
+                            score: concurrentlyAvailablePeople / totalPeople,
+                        });
                     }
                 }
 
@@ -130,13 +159,31 @@ export const GetTime = (eventData, event) => {
                 } else {
                     concurrentlyAvailablePeople--;
                 }
-                
+
                 lastTime = currentTime;
             });
-        });
+
+            const endOfDay = 24 * 60;
+            if (endOfDay > lastTime) {
+                const finalSlotDuration = endOfDay - lastTime;
+                if (concurrentlyAvailablePeople > 0 && finalSlotDuration >= eventDuration) {
+                    allAvailableBlocks.push({
+                        date: date,
+                        startTime: minutesToTime(lastTime),
+                        endTime: minutesToTime(endOfDay),
+                        attendees: concurrentlyAvailablePeople,
+                        totalPeople: totalPeople,
+                        score: concurrentlyAvailablePeople / totalPeople,
+                    });
+                }
+            }
+        }
     }
 
-    allPossibleSlots.sort((a, b) => {
+    allAvailableBlocks.sort((a, b) => {
+        if (b.score !== a.score) {
+            return b.score - a.score;
+        }
         if (b.attendees !== a.attendees) {
             return b.attendees - a.attendees;
         }
@@ -150,5 +197,22 @@ export const GetTime = (eventData, event) => {
         return timeToMinutes(a.startTime) - timeToMinutes(b.startTime);
     });
 
-    return allPossibleSlots.slice(0, 3);
+    const top3Blocks = allAvailableBlocks.slice(0, 5);
+
+    return top3Blocks.map(block => {
+        const [month, day, year] = block.date.split('-').map(Number);
+        const dateObj = new Date(year, month - 1, day);
+
+        const formatTime = (timeStr) => {
+            if (!timeStr || timeStr.length !== 4) return "";
+            return `${timeStr.substring(0, 2)}:${timeStr.substring(2, 4)}`;
+        };
+
+        return {
+            ...block,
+            displayDate: dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }),
+            displayTime: `${formatTime(block.startTime)}`
+        };
+    });
 };
+

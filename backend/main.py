@@ -52,6 +52,7 @@ async def verify_token(request: Request):
 @app.get("/oauth2callback")
 async def oauth2callback(request: Request):
     code = request.query_params.get("code")
+
     return RedirectResponse(url=f"http://localhost:3000/success?code={code}")
 
 @app.post("/store_google_tokens")
@@ -72,7 +73,7 @@ async def setup_calendar(request: Request):
             }
         },
         scopes=["https://www.googleapis.com/auth/calendar"],
-        redirect_uri="http://localhost:8000/oauth2callback"
+        redirect_uri=f"http://localhost:8000/oauth2callback"
     )
 
     flow.fetch_token(code=code)

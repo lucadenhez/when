@@ -1,3 +1,5 @@
+"use client";
+
 //import * as dotenv from 'dotenv';
 import { auth } from '../firebase/firebase';
 import { doc, getDoc } from 'firebase/firestore';
@@ -6,10 +8,9 @@ import { userInfo } from 'os';
 
 //dotenv.config();
 
-export const connectGoogleCalendar = async () => {
-
-    localStorage.removeItem('calendar_tokens');
+export const connectGoogleCalendar = async (router) => {
     const authorized = await isAuthorizedForCalendar();
+
 
     if (!authorized) {
 
@@ -18,8 +19,8 @@ export const connectGoogleCalendar = async () => {
         const SCOPES = ["https://www.googleapis.com/auth/calendar"];
 
         const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=${SCOPES[0]}&access_type=offline&prompt=consent`;
-        window.location.href = authUrl;
-    } else {
+        console.log(authUrl);
+        router.push(authUrl);
     }
 };
 

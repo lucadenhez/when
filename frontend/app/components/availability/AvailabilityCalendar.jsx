@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 
+
 export default function AvailabilityCalendar({ data, max, selectedDay }) {
   console.log(data);
   const allDates = Object.keys(data).map((d) => new Date(d));

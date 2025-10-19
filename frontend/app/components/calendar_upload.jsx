@@ -1,20 +1,17 @@
 "use client";
 
 import { motion } from "motion/react";
-
-interface CalendarUploadProps {
-  Id: number;
-  Title: string;
-  Description: string;
-  Image: string;
-}
+import { useRouter } from "next/navigation";
 
 export default function CalendarUpload({
   Id,
   Title,
   Description,
   Image,
-}: CalendarUploadProps) {
+  Function,
+}) {
+  const router = useRouter();
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -24,12 +21,15 @@ export default function CalendarUpload({
         duration: 1,
       }}
     >
-      <motion.button
+      <motion.div
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         className="w-full md:max-w-[90%]"
       >
-        <button className="border-2 p-5 flex items-center space-x-5 rounded-3xl w-full hover:cursor-pointer shadow-md">
+        <button
+          className="border-2 p-5 flex items-center space-x-5 rounded-3xl w-full hover:cursor-pointer shadow-md"
+          onClick={() => Function(router)}
+        >
           <img
             src={Image}
             alt={`${Title} icon`}
@@ -41,7 +41,7 @@ export default function CalendarUpload({
             <p className="">{Description}</p>
           </div>
         </button>
-      </motion.button>
+      </motion.div>
     </motion.div>
   );
 }
