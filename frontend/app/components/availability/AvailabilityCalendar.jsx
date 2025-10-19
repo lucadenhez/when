@@ -2,18 +2,15 @@
 
 import { useMemo } from "react";
 
-export default function AvailabilityCalendar({ data }) {
-  // --- Compute date range dynamically ---
+export default function AvailabilityCalendar({ data, max }) {
   const allDates = data.availableDays.map((d) => new Date(d.day));
   const minDate = new Date(Math.min(...allDates));
   const maxDate = new Date(Math.max(...allDates));
 
-  // Optionally include a small buffer before start
   const startDate = new Date(minDate);
-  startDate.setDate(startDate.getDate() - 7); // optional; can remove if not desired
+  startDate.setDate(startDate.getDate() - 7);
 
-  // Show X days after the min date
-  const RANGE_DAYS = 30; // ← change this to any number you like
+  const RANGE_DAYS = 30;
   const endDate = new Date(minDate);
   endDate.setDate(endDate.getDate() + RANGE_DAYS);
 
@@ -29,39 +26,55 @@ export default function AvailabilityCalendar({ data }) {
     monthsText = `${minMonth} ${minYear} — ${maxMonth} ${maxYear}`;
   }
 
-  // --- Generate all days in range ---
   const days = useMemo(() => {
     const arr = [];
     let current = new Date(startDate.getTime());
-    while (current <= endDate) {
-      arr.push(new Date(current));
-      current = new Date(current.getFullYear(), current.getMonth(), current.getDate() + 1);
-    }
-    return arr;
-  }, [startDate, endDate]);
 
-  // --- Build calendar grid grouped by weeks ---
+    while (current <= endDate) {
+      let peopleAvailable = 0;
+
+      for (const { day, people } of data.availableDays) {
+        const [month, d, year] = day.split("-").map(Number);
+        const targetDate = new Date(year, month - 1, d);
+
+        const isSameDay =
+          current.getFullYear() === targetDate.getFullYear() &&
+          current.getMonth() === targetDate.getMonth() &&
+          current.getDate() === targetDate.getDate();
+
+        if (isSameDay) {
+          peopleAvailable = people.length;
+          break;
+        }
+      }
+
+      arr.push([new Date(current), peopleAvailable]);
+      current.setDate(current.getDate() + 1);
+    }
+
+    return arr;
+  }, [startDate, endDate, data.availableDays]);
+
   const weeks = useMemo(() => {
     const weeksArr = [];
     let currentWeek = new Array(7).fill(null);
-    days.forEach((day) => {
-      const dayOfWeek = day.getDay(); // 0=Sun
-      currentWeek[dayOfWeek] = day;
+    days.forEach((dateObj) => {
+      const dayOfWeek = dateObj[0].getDay(); // 0=Sun
+      currentWeek[dayOfWeek] = dateObj;
 
-      // if Saturday, push week and start new
       if (dayOfWeek === 6) {
         weeksArr.push(currentWeek);
         currentWeek = new Array(7).fill(null);
       }
     });
-    // push any remaining days
+
     if (currentWeek.some((x) => x)) weeksArr.push(currentWeek);
     return weeksArr;
   }, [days]);
 
   return (
     <div className="flex flex-col gap-4 p-4 rounded-xl">
-      <p className="font-semibold text-lg text-center">{monthsText}</p>
+      <p className="font-semibold ml-1">{monthsText}</p>
 
       <div className="flex justify-between pb-1">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
@@ -73,16 +86,39 @@ export default function AvailabilityCalendar({ data }) {
 
       <div className="flex flex-col gap-2">
         {weeks.map((week, i) => (
-          <div key={i} className="flex justify-between">
-            {week.map((day, j) => (
-              <div
-                key={j}
-                className={`w-10 h-10 flex items-center justify-center rounded-md ${day ? "bg-white" : "bg-transparent"
-                  }`}
-              >
-                {day ? day.getDate() : ""}
-              </div>
-            ))}
+          <div key={i} className="grid grid-cols-7 gap-0">
+            {week.map((dateObj, j) => {
+              // determine if this cell and its immediate horizontal neighbors are selected
+              const selected = dateObj && dateObj[1] > 0;
+              const leftSelected = j > 0 && week[j - 1] && week[j - 1][1] > 0;
+              const rightSelected = j < 6 && week[j + 1] && week[j + 1][1] > 0;
+
+              // approximate tailwind 'rounded-md' in px
+              const radius = 7;
+              const borderRadiusStyle = selected
+                ? {
+                  borderTopLeftRadius: leftSelected ? 0 : radius,
+                  borderBottomLeftRadius: leftSelected ? 0 : radius,
+                  borderTopRightRadius: rightSelected ? 0 : radius,
+                  borderBottomRightRadius: rightSelected ? 0 : radius,
+                }
+                : { borderRadius: radius };
+
+              return (
+                <div
+                  key={j}
+                  className="w-10 h-10 flex items-center justify-center"
+                  style={{
+                    backgroundColor: dateObj ? `rgba(31, 114, 230, ${dateObj[1] / max})` : "transparent",
+                    ...borderRadiusStyle,
+                  }}
+                >
+                  <p style={{ color: dateObj && dateObj[1] / max > 0.5 ? "#ffffff" : "#000000" }}>
+                    {dateObj ? dateObj[0].getDate() : ""}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         ))}
       </div>
