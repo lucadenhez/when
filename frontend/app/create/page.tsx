@@ -36,21 +36,7 @@ interface FormData {
   LatestDate: string;
 }
 
-function generateRandomCode(): string {
-  let result = "";
-  const upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  for (let i = 0; i < 6; i++) {
-    result += upperCaseLetters.charAt(
-      Math.floor(Math.random() * upperCaseLetters.length)
-    );
-  }
-  return result;
-}
-
 export default function CreateForm() {
-
-  let randomCode = generateRandomCode();
-  console.log(`Random code: ${randomCode}`);
 
   const [eventName, setEventName] = useState("");
 
