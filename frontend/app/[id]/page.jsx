@@ -14,17 +14,21 @@ import 'swiper/css/scrollbar';
 import SuggestedDays from "../components/availability/SuggestedDays";
 import Loading from "../components/Loading";
 import { useEffect, useRef, useState } from "react";
-import DayModal from "../components/availability/DayModal";
+import TimeModal from "../components/availability/TimeModal";
 import { GetEvent, GetTime } from "../../api/events/event";
 import CheckConnections from "../components/authentication/CheckConnections"
 
 export default function Availability() {
   const whenID = useParams().id;
+
   const swiperRef = useRef(null);
-  const [selectedDay, setSelectedDay] = useState("");
-  const [modalOpen, setModalOpen] = useState(false);
+  const modalRef = useRef(null);
+
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
   const [event, setEvent] = useState(null);
   const [suggestedDays, setSuggestedDays] = useState([]);
+  const [selectedSuggestedIndex, setSelectedSuggestedIndex] = useState(null);
 
   const { push } = useRouter();
 
@@ -32,7 +36,7 @@ export default function Availability() {
     const fetchEvent = async () => {
       const data = await GetEvent(whenID);
       console.log("Fetched event:", data);
-      
+
       if (data) {
         setEvent(data);
         const suggested = GetTime(data.eventData, data)
@@ -46,8 +50,6 @@ export default function Availability() {
     fetchEvent();
   }, [whenID]);
 
-  // <DayModal isOpen={modalOpen} />
-
   if (!event) return (
     <Loading />
   );
@@ -55,7 +57,13 @@ export default function Availability() {
   return (
     <CheckConnections whenID={whenID}>
       <div>
-        <DayModal isOpen={modalOpen} setOpen={setModalOpen} />
+        <TimeModal
+          ref={modalRef}
+          event={event}
+          selectedTime={selectedTime}
+          setSelectedTime={setSelectedTime}
+          selectedDate={selectedDate}
+        />
         <div className="flex flex-col items-center h-screen justify-between">
           <div className="flex flex-col items-center">
             <div className="mt-20 text-center mb-12">
@@ -79,31 +87,39 @@ export default function Availability() {
             </div>
           </div>
 
-        <div className="w-full max-w-full sm:max-w-1/3 h-full">
-          <Swiper
-            modules={[Pagination, Scrollbar, A11y]}
-            spaceBetween={30}
-            slidesPerView={1}
-            pagination={{ clickable: true }}
-            loop
-            className="w-full h-full"
-            onSwiper={(swiper) => (swiperRef.current = swiper)}
-          >
-            <SwiperSlide className="flex items-center justify-center h-full">
-              <AvailabilityCalendar
-                data={event.schema}
-                max={event.numPeople}
-                selectedDay={selectedDay}
-              />
-            </SwiperSlide>
-            <SwiperSlide className="flex justify-center">
-              <SuggestedDays dates={suggestedDays}
-                swiperRef={swiperRef}
-                setSelectedDay={setSelectedDay}
-              />
-            </SwiperSlide>
-          </Swiper>
-        </div>
+          <div className="w-full max-w-full sm:max-w-1/3 h-full">
+            <Swiper
+              modules={[Pagination, Scrollbar, A11y]}
+              spaceBetween={30}
+              slidesPerView={1}
+              pagination={{ clickable: true }}
+              loop
+              className="w-full h-full"
+              onSwiper={(swiper) => (swiperRef.current = swiper)}
+            >
+              <SwiperSlide className="flex items-center justify-center h-full">
+                <AvailabilityCalendar
+                  data={event.schema}
+                  max={event.numPeople}
+                  selectedDate={selectedDate}
+                />
+              </SwiperSlide>
+              <SwiperSlide className="flex justify-center">
+                <div className="mx-10 pr-5">
+                  <SuggestedDays dates={suggestedDays}
+                    swiperRef={swiperRef}
+                    modalRef={modalRef}
+                    setSelectedDate={setSelectedDate}
+                    setSelectedTime={setSelectedTime}
+                    selectedDate={selectedDate}
+                    selectedTime={selectedTime}
+                    externalSelectedIndex={selectedSuggestedIndex}
+                  />
+                </div>
+
+              </SwiperSlide>
+            </Swiper>
+          </div>
 
           <p className="mb-12 text-sm text-black/50 font-semibold">
             Swipe to view suggested days

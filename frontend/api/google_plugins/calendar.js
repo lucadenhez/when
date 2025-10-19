@@ -11,7 +11,6 @@ import { userInfo } from 'os';
 export const connectGoogleCalendar = async (router) => {
     const authorized = await isAuthorizedForCalendar();
 
-
     if (!authorized) {
 
         const CLIENT_ID = "531545062015-l2hcfpclbs387jaek52irm7p5rsv2qhj.apps.googleusercontent.com";
@@ -21,6 +20,8 @@ export const connectGoogleCalendar = async (router) => {
         const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=${SCOPES[0]}&access_type=offline&prompt=consent`;
         console.log(authUrl);
         router.push(authUrl);
+    } else {
+        router.push("/");
     }
 };
 
