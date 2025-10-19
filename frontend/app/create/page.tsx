@@ -2,6 +2,8 @@
 
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
+import DesktopForm from "../components/form/desktop";
+import MobileForm from "../components/form/mobile_form";
 
 const useIsMobile = (breakpoint = 768) => {
   // usually 768 pixels for phone size
@@ -24,54 +26,82 @@ const useIsMobile = (breakpoint = 768) => {
   return isMobile;
 };
 
+interface FormData {
+  EventName: string;
+  ShortName: string;
+  Description: string;
+  Hours: number;
+  Minutes: number;
+  Location: string;
+  LatestDate: string;
+}
+
+function generateRandomCode(): string {
+  let result = "";
+  const upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  for (let i = 0; i < 6; i++) {
+    result += upperCaseLetters.charAt(
+      Math.floor(Math.random() * upperCaseLetters.length)
+    );
+  }
+  return result;
+}
+
 export default function CreateForm() {
-  // different form states --> each will be scrolled to when the user is done
-  const states = [];
+
+  let randomCode = generateRandomCode();
+  console.log(`Random code: ${randomCode}`);
+
+  const [eventName, setEventName] = useState("");
+
+  const [shortName, setShortName] = useState("");
+
+  const [description, setDescription] = useState("");
+
+  const [hours, setHours] = useState(0);
+
+  const [minutes, setMinutes] = useState(0);
+
+  const [location, setLocation] = useState("");
+
+  const [latestDate, setLatestDate] = useState("");
 
   return (
     <div className="h-screen w-screen flex justify-center items-center">
       {!useIsMobile() ? (
-        <div className="flex justify-center items-center text-center border-2 shadow-2xl border-blue-200 rounded-xl p-20 w-full max-w-[80%] h-screen max-h-[80%]">
-          <div className="space-y-16">
-            <div className="space-y-3">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.1, duration: 0.5 }}
-              >
-                <h1 className="text-6xl font-bold">Hello, [name]!</h1>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1, duration: 0.5 }}
-              >
-                <h2 className="text-4xl font-bold">
-                  Let's get that event set up.
-                </h2>
-              </motion.div>
-            </div>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                delay: 1.5,
-                duration: 1,
-              }}
-            >
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <button className="p-5 bg-blue-400 hover:bg-blue-500 hover:cursor-pointer text-3xl rounded-2xl text-white transition-all duration-200">
-                  Get started
-                </button>
-              </motion.button>
-            </motion.div>
-          </div>
-        </div>
+        <DesktopForm
+          eventName={eventName}
+          setEventName={setEventName}
+          shortName={shortName}
+          setShortName={setShortName}
+          description={description}
+          setDescription={setDescription}
+          hours={hours}
+          setHours={setHours}
+          minutes={minutes}
+          setMinutes={setMinutes}
+          location={location}
+          setLocation={setLocation}
+          latestDate={latestDate}
+          setLatestDate={setLatestDate}
+        />
       ) : (
-        <h1>heheheha</h1>
+        <MobileForm
+          eventName={eventName}
+          setEventName={setEventName}
+          shortName={shortName}
+          setShortName={setShortName}
+          description={description}
+          setDescription={setDescription}
+          hours={hours}
+          setHours={setHours}
+          minutes={minutes}
+          setMinutes={setMinutes}
+          location={location}
+          setLocation={setLocation}
+          latestDate={latestDate}
+          setLatestDate={setLatestDate}
+        />
       )}
     </div>
   );
