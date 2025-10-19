@@ -5,10 +5,11 @@ import CalendarUpload from "../../components/calendar_upload";
 import { connectGoogleCalendar } from "@/api/google_plugins/calendar";
 import { useParams, useRouter } from "next/navigation";
 
-
 export default function UploadCalendar() {
-  const whenID = useParams().id;
   const router = useRouter();
+
+  const whenID = useParams().id;
+  sessionStorage.setItem("whenID", whenID);
 
   const calendar_upload_choices = [
     {
@@ -16,8 +17,7 @@ export default function UploadCalendar() {
       Title: "Google Calendar",
       Description: "Gmail, Google Tasks, etc.",
       Image: "/images/icons/calendars/google_cal.svg",
-      Function: () => connectGoogleCalendar(whenID, router),
-      whenID: whenID
+      Function: () => connectGoogleCalendar(router),
     },
     {
       Id: 2,
@@ -25,7 +25,6 @@ export default function UploadCalendar() {
       Description: "iCloud",
       Image: "/images/icons/calendars/apple_cal.svg",
       Function: () => { },
-      whenID: whenID
     },
     {
       Id: 3,
@@ -33,7 +32,6 @@ export default function UploadCalendar() {
       Description: "Microsoft 365, Office",
       Image: "/images/icons/calendars/outlook_cal.svg",
       Function: () => { },
-      whenID: whenID
     },
     {
       Id: 4,
@@ -41,7 +39,6 @@ export default function UploadCalendar() {
       Description: "Take a photo of your physical planner",
       Image: "/images/icons/calendars/scan_planner.png",
       Function: () => { },
-      whenID: whenID
     },
 
     {
@@ -50,7 +47,6 @@ export default function UploadCalendar() {
       Description: "Enter your availability manually",
       Image: "/images/icons/calendars/no_planner.png",
       Function: () => { },
-      whenID: whenID
     },
   ];
 

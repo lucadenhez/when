@@ -9,7 +9,6 @@ export default function CalendarUpload({
   Description,
   Image,
   Function,
-  whenID
 }) {
   const router = useRouter();
 
@@ -29,7 +28,7 @@ export default function CalendarUpload({
       >
         <button
           className="border-2 p-5 flex items-center space-x-5 rounded-3xl w-full hover:cursor-pointer shadow-md"
-          onClick={() => Function(whenID, router)} // ✅ pass router here
+          onClick={() => Function(router)}
         >
           <img
             src={Image}
