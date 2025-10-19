@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AddAvailability } from "@/api/events/event";
+import Loading from "../components/Loading";
 
 export default function Success() {
     const { push } = useRouter();
@@ -42,8 +43,6 @@ export default function Success() {
     });
 
     return (
-        <div>
-            Success
-        </div>
+        <Loading/>
     );
 } 
