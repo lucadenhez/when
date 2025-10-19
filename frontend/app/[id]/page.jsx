@@ -6,6 +6,13 @@ import AvailabilityCalendar from "../components/availability/AvailabilityCalenda
 import Tabination from "../components/availability/Tabination";
 import ColorKey from "../components/availability/ColorKey";
 import { useParams } from 'next/navigation';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+import SuggestedDays from "../components/availability/SuggestedDays";
 
 export default function Availability() {
   const whenID = useParams().id;
@@ -15,7 +22,7 @@ export default function Availability() {
 
 
   return (
-    <div className="flex flex-col items-center h-screen justify-between ">
+    <div className="flex flex-col items-center h-screen justify-between">
       <div className="flex flex-col items-center gap-12">
         <div className="mt-20 text-center">
           <p className="font-semibold text-3xl">Thanks!</p>
@@ -25,12 +32,28 @@ export default function Availability() {
           <ColorKey min={1} max={4} />
         </div>
       </div>
-    
-      <div className="w-full flex flex-col items-center mb-7 gap-10">
-        <AvailabilityCalendar data={example_schema} min={1} max={4} />
-        <Tabination />
-        <p className="text-sm text-black/50 font-semibold">Swipe to the left to view suggested days</p>
+
+
+      <div className="w-full max-w-[90vw]">
+        <Swiper
+          modules={[Pagination, Scrollbar, A11y]}
+          spaceBetween={30}
+          slidesPerView={1}
+          pagination={{ clickable: true }}
+          className="w-full"
+        >
+          <SwiperSlide className="flex justify-center">
+            <AvailabilityCalendar data={example_schema} min={1} max={4} />
+          </SwiperSlide>
+          <SwiperSlide className="flex justify-center">
+            <SuggestedDays />
+          </SwiperSlide>
+        </Swiper>
       </div>
+
+      <p className="mb-12 text-sm text-black/50 font-semibold">
+        Swipe to the left to view suggested days
+      </p>
     </div>
   );
 }

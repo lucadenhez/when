@@ -97,11 +97,11 @@ export default function AvailabilityCalendar({ data, max }) {
               const radius = 7;
               const borderRadiusStyle = selected
                 ? {
-                    borderTopLeftRadius: leftSelected ? 0 : radius,
-                    borderBottomLeftRadius: leftSelected ? 0 : radius,
-                    borderTopRightRadius: rightSelected ? 0 : radius,
-                    borderBottomRightRadius: rightSelected ? 0 : radius,
-                  }
+                  borderTopLeftRadius: leftSelected ? 0 : radius,
+                  borderBottomLeftRadius: leftSelected ? 0 : radius,
+                  borderTopRightRadius: rightSelected ? 0 : radius,
+                  borderBottomRightRadius: rightSelected ? 0 : radius,
+                }
                 : { borderRadius: radius };
 
               return (
