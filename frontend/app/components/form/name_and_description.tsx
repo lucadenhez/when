@@ -43,6 +43,7 @@ export default function NameAndDescription({
           </label>
           <input
             className="border border-slate-300 focus:border-slate-900 text-sm p-2 w-full rounded-md transition-all duration-200"
+            maxLength={10}
             value={shortName}
             onChange={(e) => setShortName(e.target.value)}
           />
