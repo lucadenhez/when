@@ -2,18 +2,15 @@
 
 import { useMemo } from "react";
 
-export default function AvailabilityCalendar({ data }) {
-  // --- Compute date range dynamically ---
+export default function AvailabilityCalendar({ data, min, max }) {
   const allDates = data.availableDays.map((d) => new Date(d.day));
   const minDate = new Date(Math.min(...allDates));
   const maxDate = new Date(Math.max(...allDates));
 
-  // Optionally include a small buffer before start
   const startDate = new Date(minDate);
-  startDate.setDate(startDate.getDate() - 7); // optional; can remove if not desired
+  startDate.setDate(startDate.getDate() - 7);
 
-  // Show X days after the min date
-  const RANGE_DAYS = 30; // ← change this to any number you like
+  const RANGE_DAYS = 30;
   const endDate = new Date(minDate);
   endDate.setDate(endDate.getDate() + RANGE_DAYS);
 
@@ -29,32 +26,48 @@ export default function AvailabilityCalendar({ data }) {
     monthsText = `${minMonth} ${minYear} — ${maxMonth} ${maxYear}`;
   }
 
-  // --- Generate all days in range ---
   const days = useMemo(() => {
     const arr = [];
     let current = new Date(startDate.getTime());
-    while (current <= endDate) {
-      arr.push(new Date(current));
-      current = new Date(current.getFullYear(), current.getMonth(), current.getDate() + 1);
-    }
-    return arr;
-  }, [startDate, endDate]);
 
-  // --- Build calendar grid grouped by weeks ---
+    while (current <= endDate) {
+      let peopleAvailable = 0;
+
+      for (const { day, people } of data.availableDays) {
+        const [month, d, year] = day.split("-").map(Number);
+        const targetDate = new Date(year, month - 1, d);
+
+        const isSameDay =
+          current.getFullYear() === targetDate.getFullYear() &&
+          current.getMonth() === targetDate.getMonth() &&
+          current.getDate() === targetDate.getDate();
+
+        if (isSameDay) {
+          peopleAvailable = people.length;
+          break;
+        }
+      }
+
+      arr.push([new Date(current), peopleAvailable]);
+      current.setDate(current.getDate() + 1);
+    }
+
+    return arr;
+  }, [startDate, endDate, data.availableDays]);
+
   const weeks = useMemo(() => {
     const weeksArr = [];
     let currentWeek = new Array(7).fill(null);
-    days.forEach((day) => {
-      const dayOfWeek = day.getDay(); // 0=Sun
-      currentWeek[dayOfWeek] = day;
+    days.forEach((dateObj) => {
+      const dayOfWeek = dateObj[0].getDay(); // 0=Sun
+      currentWeek[dayOfWeek] = dateObj;
 
-      // if Saturday, push week and start new
       if (dayOfWeek === 6) {
         weeksArr.push(currentWeek);
         currentWeek = new Array(7).fill(null);
       }
     });
-    // push any remaining days
+
     if (currentWeek.some((x) => x)) weeksArr.push(currentWeek);
     return weeksArr;
   }, [days]);
@@ -74,13 +87,17 @@ export default function AvailabilityCalendar({ data }) {
       <div className="flex flex-col gap-2">
         {weeks.map((week, i) => (
           <div key={i} className="flex justify-between">
-            {week.map((day, j) => (
+            {week.map((dateObj, j) => (
               <div
                 key={j}
-                className={`w-10 h-10 flex items-center justify-center rounded-md ${day ? "bg-white" : "bg-transparent"
-                  }`}
+                className="w-10 h-10 flex items-center justify-center rounded-md"
+                style={{
+                  backgroundColor: dateObj ? `rgba(31, 114, 230, ${dateObj[1] / (max - min + 1)})` : 'transparent',
+                }}
               >
-                {day ? day.getDate() : ""}
+                <p style={{ color: dateObj && dateObj[1] / (max - min + 1) > 0.5 ? "#ffffff" : "#000000" }}>
+                  {dateObj ? dateObj[0].getDate() : ""}
+                </p>
               </div>
             ))}
           </div>
