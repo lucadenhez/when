@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { MutableRefObject, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import FormLandingPage from "./form_landing_page";
 import NameAndDescription from "./name_and_description";
@@ -56,7 +56,7 @@ export default function MobileForm({
   };
 
   return (
-    <div className="">
+    <div className="w-full max-h-screen">
       <AnimatePresence initial={true} mode="wait">
         {currentForm === 1 && (
           <FormLandingPage

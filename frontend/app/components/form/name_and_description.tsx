@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 interface NameAndDescriptionProps {
   currentForm: number;
@@ -21,16 +22,34 @@ export default function NameAndDescription({
   description,
   setDescription,
 }: NameAndDescriptionProps) {
-  const handleNextClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (eventName === "") {
+      console.log("test");
+      toast.error("Please enter the event's name.");
+      return;
+    }
+    if (shortName === "") {
+      toast.error("Please enter the event's abbreviation.");
+      return;
+    }
+    if (description === "") {
+      toast.error("Please enter the event's description.");
+      return;
+    }
     handleSlidePlus();
   };
 
   return (
-    <form className="w-screen">
-      <div className="max-w-[80%] m-auto space-y-5">
+    <form className="w-full text-sm" onSubmit={handleFormSubmit}>
+      <div className="w-full m-auto space-y-5">
+        <p className="font-light text-center">
+          ----------- Event Name & Description -----------
+        </p>
         <div className="space-y-1">
-          <label className="block text-sm font-medium">Event name</label>
+          <label className="block text-sm font-medium">
+            Event name <span className="text-red-500">*</span>
+          </label>
           <input
             className="border border-slate-300 focus:border-slate-900 rounded-md text-sm p-2 w-full transition-all duration-200"
             value={eventName}
@@ -39,7 +58,8 @@ export default function NameAndDescription({
         </div>
         <div className="space-y-1">
           <label className="block text-sm font-medium">
-            Abbreviation (10 characters max)
+            Abbreviation (10 characters max){" "}
+            <span className="text-red-500">*</span>
           </label>
           <input
             className="border border-slate-300 focus:border-slate-900 text-sm p-2 w-full rounded-md transition-all duration-200"
@@ -49,7 +69,9 @@ export default function NameAndDescription({
           />
         </div>
         <div className="space-y-1">
-          <label className="block text-sm font-medium">Description</label>
+          <label className="block text-sm font-medium">
+            Description <span className="text-red-500">*</span>
+          </label>
           <input
             className="border border-slate-300 focus:border-slate-900 text-sm p-2 w-full rounded-md transition-all duration-200"
             value={description}
@@ -57,13 +79,14 @@ export default function NameAndDescription({
           />
         </div>
         <div className="max-w-[90%] m-auto">
-          <button
+          <motion.button
             className="w-full bg-blue-400 hover:bg-blue-500 text-sm text-white font-bold py-3 px-5 rounded-full transition-colors"
-            onClick={handleNextClick}
             type="submit"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
             Next
-          </button>
+          </motion.button>
         </div>
       </div>
     </form>
