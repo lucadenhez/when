@@ -14,7 +14,7 @@ export const connectGoogleCalendar = async (router) => {
     if (!authorized) {
 
         const CLIENT_ID = "531545062015-l2hcfpclbs387jaek52irm7p5rsv2qhj.apps.googleusercontent.com";
-        const REDIRECT_URI = "http://localhost:8000/oauth2callback";
+        const REDIRECT_URI = "http://play.lucadenhez.com:8000/oauth2callback";
         const SCOPES = ["https://www.googleapis.com/auth/calendar"];
 
         const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=${SCOPES[0]}&access_type=offline&prompt=consent`;

@@ -93,7 +93,7 @@ export const AddAvailability = async (eventID) => {
 
     try {
         const response = await fetch(
-            "http://localhost:8000/add_availability",
+            "http://play.lucadenhez.com:8000/add_availability",
             {
                 method: "POST",
                 headers: {

@@ -12,7 +12,7 @@ export default function Success() {
 
     const storeTokens = async () => {
         try {
-            const response = await fetch(`http://localhost:8000/store_google_tokens`, {
+            const response = await fetch(`http://play.lucadenhez.com:8000/store_google_tokens`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ code }),
