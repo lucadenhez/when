@@ -28,7 +28,6 @@ interface MobileFormProps {
   setLocation: (value: string) => void;
   latestDate: string;
   setLatestDate: (value: string) => void;
-  randomCode: string;
 }
 
 export default function MobileForm({
