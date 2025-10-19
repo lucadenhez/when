@@ -26,27 +26,29 @@ export const GetDayHours = async (eventID, date) => {
 }
 
 export const AddBestTime = async (eventID, date, time) => {
-  const data = await GetEvent(eventID); // should return an object (the event)
-  const docRef = doc(db, "events", eventID);
+    const data = await GetEvent(eventID); // should return an object (the event)
+    const docRef = doc(db, "events", eventID);
 
-  // Parse date and time
-  const parsedDate = new Date(date);
-  const hours = parseInt(time.substring(0, 2));
-  const minutes = parseInt(time.substring(2));
+    // Parse date safely
+    const [month, day, year] = date.split("-");
+    const parsedDate = new Date(`${year}-${month}-${day}T00:00:00`);
 
-  parsedDate.setHours(hours);
-  parsedDate.setMinutes(minutes);
+    // Parse time safely
+    const paddedTime = time.padStart(4, "0");
+    const hours = parseInt(paddedTime.substring(0, 2));
+    const minutes = parseInt(paddedTime.substring(2));
 
-  // Ensure bestTimes exists
-  if (!Array.isArray(data.bestTimes)) {
-    data.bestTimes = [];
-  }
+    parsedDate.setHours(hours);
+    parsedDate.setMinutes(minutes);
 
-  // Add the time
-  data.bestTimes.push(parsedDate.toISOString());
+    // Ensure bestTimes exists
+    if (!Array.isArray(data.bestTimes)) {
+        data.bestTimes = [];
+    }
 
-  // Save updated document
-  await setDoc(docRef, data);
+    // Add and save
+    data.bestTimes.push(parsedDate.toISOString());
+    await setDoc(docRef, data, { merge: true });
 };
 
 export const GetBestTime = async (eventID) => {
@@ -61,8 +63,18 @@ export const GetBestTime = async (eventID) => {
     const bestTimes = data.bestTimes;
     const numPeople = data.numPeople;
 
-    if (bestTimes.length == numPeople) {
-        return Date.parse(bestTimes[0]).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    if (bestTimes.length >= numPeople) {
+        // return bestTimes[0];
+        const date = new Date(bestTimes[0]);
+
+        const formatted = date.toLocaleDateString("en-US", {
+            weekday: "short",   // Mon
+            month: "long",      // October
+            day: "numeric"      // 20
+        });
+
+        return formatted;
+        // return Date.parse(bestTimes[0]).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
     } else {
         return `${bestTimes.length} / ${numPeople} people have submitted their free days. Check back soon!`;
     }

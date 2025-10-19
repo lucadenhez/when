@@ -21,16 +21,6 @@ const TimeModal = forwardRef(function TimeModal({ selectedTime, setSelectedTime,
 
   const times = Array.from({ length: 24 }, (_, i) => i);
 
-  if (selectedDate) {
-    console.log("Selected date: " + selectedDate);
-
-    GetDayHours(whenID, selectedDate).then((hours) => {
-      console.log("Hours:", hours);
-    });
-  }
-
-
-
   // style={{ backgroundColor: isSelectedDay ? "#5EAA52" : dateObj ? `rgba(8, 67, 150, ${dateObj[1] / max})` : "transparent" }}
 
   return (
@@ -58,16 +48,21 @@ const TimeModal = forwardRef(function TimeModal({ selectedTime, setSelectedTime,
                       width={30}
                       height={30}
                       alt="checkmark"
-                      hidden={selectedTime && dataTime !== selectedTime.substr(0, 2)}
+                      hidden={!selectedTime || dataTime !== selectedTime.substr(0, 2)}
                     />
                     <button
-                      className={`relative z-0 border-2 text-center rounded-xl w-full py-2 font-semibold transition-all duration-150 ${selectedTime && dataTime === selectedTime.substr(0, 2) ? "border-[#5EAA52] scale-105" : "border-transparent"}`}
-
+                      className={`relative z-0 border-2 text-center rounded-xl w-full py-2 font-semibold transition-all duration-150
+    ${selectedTime && dataTime === selectedTime.substr(0, 2)
+                          ? "border-[#5EAA52] scale-105"
+                          : "border-transparent"
+                        }`}
                       onClick={() => {
                         setSelectedTime(dataTime);
+                        console.log(dataTime);
+                        console.log(selectedDate);
                       }}
                     >
-                      <p>{displayTime}</p>
+                      {displayTime}
                     </button>
                   </div>
                 );

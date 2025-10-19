@@ -103,6 +103,8 @@ export default function Availability() {
                   data={event.schema}
                   max={event.numPeople}
                   selectedDate={selectedDate}
+                  setSelectedDate={setSelectedDate}
+                  modalRef={modalRef}
                 />
               </SwiperSlide>
               <SwiperSlide className="flex justify-center">

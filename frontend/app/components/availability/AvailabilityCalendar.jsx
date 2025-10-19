@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 
 
-export default function AvailabilityCalendar({ data, max, selectedDay }) {
+export default function AvailabilityCalendar({ data, max, selectedDay, setSelectedDate, modalRef }) {
   // console.log(data);
   const allDates = Object.keys(data).map((d) => new Date(d));
   const minDate = new Date(Math.min(...allDates));
@@ -102,7 +102,7 @@ export default function AvailabilityCalendar({ data, max, selectedDay }) {
               }
 
               return (
-                <div
+                <button
                   key={j}
                   className="w-10 h-10 flex items-center justify-center rounded-md"
                   style={{
@@ -110,11 +110,21 @@ export default function AvailabilityCalendar({ data, max, selectedDay }) {
                     border: dateObj && isToday ? "3px solid" : "",
                     borderColor: isToday ? "#D57070" : ""
                   }}
+                  onClick={() => {
+                    const formatted = new Date().toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" }).replace(/\//g, "-");
+                    setSelectedDate(formatted);
+
+                    setTimeout(() => {
+                      if (modalRef?.current) {
+                        modalRef.current.open();
+                      }
+                    }, 200);
+                  }}
                 >
                   <p style={{ color: dateObj && dateObj[1] / max > 0.5 ? "#ffffff" : "#000000" }}>
                     {dateObj ? dateObj[0].getDate() : ""}
                   </p>
-                </div>
+                </button>
               );
             })}
           </div>
