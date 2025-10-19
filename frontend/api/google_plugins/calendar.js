@@ -8,8 +8,7 @@ import { userInfo } from 'os';
 
 //dotenv.config();
 
-export const connectGoogleCalendar = async (whenID, router) => {
-    localStorage.removeItem("calendar_tokens");
+export const connectGoogleCalendar = async () => {
     const authorized = await isAuthorizedForCalendar();
 
 

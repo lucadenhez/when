@@ -15,8 +15,7 @@ import SuggestedDays from "../components/availability/SuggestedDays";
 import Loading from "../components/Loading";
 import { useEffect, useRef, useState } from "react";
 import DayModal from "../components/availability/DayModal";
-import { GetEvent } from "../../api/events/event";
-import CheckConnections from "../components/authentication/CheckConnections";
+import { GetEvent, GetTime } from "../../api/events/event";
 
 export default function Availability() {
   const whenID = useParams().id;
@@ -24,6 +23,7 @@ export default function Availability() {
   const [selectedDay, setSelectedDay] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [event, setEvent] = useState(null);
+  const [suggestedDays, setSuggestedDays] = useState([]);
 
   const { push } = useRouter();
 
@@ -31,10 +31,12 @@ export default function Availability() {
     const fetchEvent = async () => {
       const data = await GetEvent(whenID);
       console.log("Fetched event:", data);
-
+      
       if (data) {
         setEvent(data);
-        console.log(data);
+        const suggested = GetTime(data.eventData, data)
+        setSuggestedDays(suggested);
+        console.log(suggested);
       } else {
         push("/huh");
       }
@@ -76,39 +78,31 @@ export default function Availability() {
             </div>
           </div>
 
-          <div className="w-full max-w-full sm:max-w-1/3 h-full">
-            <Swiper
-              modules={[Pagination, Scrollbar, A11y]}
-              spaceBetween={30}
-              slidesPerView={1}
-              pagination={{ clickable: true }}
-              loop
-              className="w-full h-full"
-              onSwiper={(swiper) => (swiperRef.current = swiper)}
-            >
-              <SwiperSlide className="flex items-center justify-center h-full">
-                <AvailabilityCalendar
-                  data={event.schema}
-                  max={event.numPeople}
-                  selectedDay={selectedDay}
-                />
-              </SwiperSlide>
-
-              <SwiperSlide className="flex items-center justify-center h-full">
-                <div className="pr-5 mx-10">
-                  <SuggestedDays
-                    dates={[
-                      { day: "10-24-2025", prettyDay: "Fri, Oct 24", time: "17:15" },
-                      { day: "10-20-2025", prettyDay: "Mon, Oct 20", time: "10:00" },
-                      { day: "10-27-2025", prettyDay: "Mon, Oct 27", time: "19:30" },
-                    ]}
-                    swiperRef={swiperRef}
-                    setSelectedDay={setSelectedDay}
-                  />
-                </div>
-              </SwiperSlide>
-            </Swiper>
-          </div>
+        <div className="w-full max-w-full sm:max-w-1/3 h-full">
+          <Swiper
+            modules={[Pagination, Scrollbar, A11y]}
+            spaceBetween={30}
+            slidesPerView={1}
+            pagination={{ clickable: true }}
+            loop
+            className="w-full h-full"
+            onSwiper={(swiper) => (swiperRef.current = swiper)}
+          >
+            <SwiperSlide className="flex items-center justify-center h-full">
+              <AvailabilityCalendar
+                data={event.schema}
+                max={event.numPeople}
+                selectedDay={selectedDay}
+              />
+            </SwiperSlide>
+            <SwiperSlide className="flex justify-center">
+              <SuggestedDays dates={suggestedDays}
+                swiperRef={swiperRef}
+                setSelectedDay={setSelectedDay}
+              />
+            </SwiperSlide>
+          </Swiper>
+        </div>
 
           <p className="mb-12 text-sm text-black/50 font-semibold">
             Swipe to view suggested days
