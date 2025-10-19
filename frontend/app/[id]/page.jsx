@@ -15,7 +15,7 @@ import SuggestedDays from "../components/availability/SuggestedDays";
 import Loading from "../components/Loading";
 import { useEffect, useRef, useState } from "react";
 import DayModal from "../components/availability/DayModal";
-import { GetEvent } from "../../api/events/event";
+import { GetEvent, GetTime } from "../../api/events/event";
 
 export default function Availability() {
   const whenID = useParams().id;
@@ -23,6 +23,7 @@ export default function Availability() {
   const [selectedDay, setSelectedDay] = useState("");
   const modalOpen = useState(false);
   const [event, setEvent] = useState(null);
+  const [suggestedDays, setSuggestedDays] = useState([]);
 
   const { push } = useRouter();
 
@@ -30,9 +31,12 @@ export default function Availability() {
     const fetchEvent = async () => {
       const data = await GetEvent(whenID);
       console.log("Fetched event:", data);
-
+      
       if (data) {
         setEvent(data);
+        const suggested = GetTime(data["eventData"], data["schema"])
+        console.log(suggested.length)
+        setSuggestedDays(suggested);
         console.log(data);
       } else {
         push("/huh");
@@ -92,11 +96,7 @@ export default function Availability() {
               />
             </SwiperSlide>
             <SwiperSlide className="flex justify-center">
-              <SuggestedDays dates={[
-                { "day": "10-24-2025", "prettyDay": "Fri, Oct 24", "time": "17:15" },
-                { "day": "10-20-2025", "prettyDay": "Mon, Oct 20", "time": "10:00" },
-                { "day": "10-27-2025", "prettyDay": "Mon, Oct 27", "time": "19:30" }
-              ]}
+              <SuggestedDays dates={suggestedDays}
                 swiperRef={swiperRef}
                 setSelectedDay={setSelectedDay}
               />
