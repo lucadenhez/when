@@ -74,7 +74,7 @@ export default function Home() {
                 whileTap={{ scale: 0.95 }}
               >
                 <Link href={"/login"}>
-                  <button className="text-lg font-semibold bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400 py-3 px-6 rounded-full text-white">
+                  <button className="text-lg font-semibold bg-gradient-to-r from-blue-300 via-blue-500 to-blue-300 py-3 px-6 rounded-full text-white">
                     Let's go!
                   </button>
                 </Link>

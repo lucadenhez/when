@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { CreateEvent } from "@/api/events/event";
 import { CalendarForm } from "./calendar";
+import { useRouter } from "next/navigation";
 
 function generateRandomCode(): string {
   let result = "";
@@ -44,6 +45,30 @@ export default function DurationAndDate({
   submitted,
   setSubmitted,
 }: DurationAndDateProps) {
+  const router = useRouter();
+
+  const getInputValue = (date: string): string => {
+    if (!date) {
+      return "";
+    }
+    const sections = date.split("-");
+    if (sections.length === 3) {
+      // need to return in the format YYYY-MM-DD
+      return `${sections[2]}-${sections[0]}-${sections[1]}`;
+    }
+    return "";
+  };
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // we want the date to go into the database MM-DD-YYYY
+    const dateValue = e.target.value;
+    if (dateValue) {
+      const [year, month, day] = dateValue.split("-");
+      const formattedDate = `${month}-${day}-${year}`;
+      setLatestDate(formattedDate);
+    }
+  };
+
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setSubmitted(true);
@@ -61,6 +86,7 @@ export default function DurationAndDate({
         latestDate: latestDate,
       },
     });
+    router.push(`/connect/${randomCode}`);
   };
 
   return (
@@ -110,8 +136,8 @@ export default function DurationAndDate({
           <input
             type="date"
             className="border border-slate-300 focus:border-slate-900 text-sm p-2 w-full rounded-md transition-all duration-200"
-            value={latestDate}
-            onChange={(e) => setLatestDate(e.target.value)}
+            value={getInputValue(latestDate)}
+            onChange={handleDateChange}
           />
         </div>
         <div className="flex justify-center mt-6">
@@ -135,7 +161,6 @@ export default function DurationAndDate({
             </div>
           </button>
         </div>
-        {/* <CalendarForm /> ignore this for now, just trying stuff out for myself */}
       </div>
     </form>
   );

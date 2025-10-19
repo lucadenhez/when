@@ -37,7 +37,6 @@ interface FormData {
 }
 
 export default function CreateForm() {
-
   const [eventName, setEventName] = useState("");
 
   const [shortName, setShortName] = useState("");
@@ -53,42 +52,46 @@ export default function CreateForm() {
   const [latestDate, setLatestDate] = useState("");
 
   return (
-    <div className="h-screen w-screen flex justify-center items-center">
-      {!useIsMobile() ? (
-        <DesktopForm
-          eventName={eventName}
-          setEventName={setEventName}
-          shortName={shortName}
-          setShortName={setShortName}
-          description={description}
-          setDescription={setDescription}
-          hours={hours}
-          setHours={setHours}
-          minutes={minutes}
-          setMinutes={setMinutes}
-          location={location}
-          setLocation={setLocation}
-          latestDate={latestDate}
-          setLatestDate={setLatestDate}
-        />
-      ) : (
-        <MobileForm
-          eventName={eventName}
-          setEventName={setEventName}
-          shortName={shortName}
-          setShortName={setShortName}
-          description={description}
-          setDescription={setDescription}
-          hours={hours}
-          setHours={setHours}
-          minutes={minutes}
-          setMinutes={setMinutes}
-          location={location}
-          setLocation={setLocation}
-          latestDate={latestDate}
-          setLatestDate={setLatestDate}
-        />
-      )}
-    </div>
+    <>
+      <div className="absolute inset-0 -z-10 h-full w-full bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,#89CFF0_100%)]"></div>
+
+      <div className="h-screen w-screen flex justify-center items-center">
+        {!useIsMobile() ? (
+          <DesktopForm
+            eventName={eventName}
+            setEventName={setEventName}
+            shortName={shortName}
+            setShortName={setShortName}
+            description={description}
+            setDescription={setDescription}
+            hours={hours}
+            setHours={setHours}
+            minutes={minutes}
+            setMinutes={setMinutes}
+            location={location}
+            setLocation={setLocation}
+            latestDate={latestDate}
+            setLatestDate={setLatestDate}
+          />
+        ) : (
+          <MobileForm
+            eventName={eventName}
+            setEventName={setEventName}
+            shortName={shortName}
+            setShortName={setShortName}
+            description={description}
+            setDescription={setDescription}
+            hours={hours}
+            setHours={setHours}
+            minutes={minutes}
+            setMinutes={setMinutes}
+            location={location}
+            setLocation={setLocation}
+            latestDate={latestDate}
+            setLatestDate={setLatestDate}
+          />
+        )}
+      </div>
+    </>
   );
 }
