@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 
-export default function AvailabilityCalendar({ data, min, max }) {
+export default function AvailabilityCalendar({ data, max }) {
   const allDates = data.availableDays.map((d) => new Date(d.day));
   const minDate = new Date(Math.min(...allDates));
   const maxDate = new Date(Math.max(...allDates));
@@ -74,7 +74,7 @@ export default function AvailabilityCalendar({ data, min, max }) {
 
   return (
     <div className="flex flex-col gap-4 p-4 rounded-xl">
-      <p className="font-semibold text-lg text-center">{monthsText}</p>
+      <p className="font-semibold ml-1">{monthsText}</p>
 
       <div className="flex justify-between pb-1">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
@@ -86,20 +86,39 @@ export default function AvailabilityCalendar({ data, min, max }) {
 
       <div className="flex flex-col gap-2">
         {weeks.map((week, i) => (
-          <div key={i} className="flex justify-between">
-            {week.map((dateObj, j) => (
-              <div
-                key={j}
-                className="w-10 h-10 flex items-center justify-center rounded-md"
-                style={{
-                  backgroundColor: dateObj ? `rgba(31, 114, 230, ${dateObj[1] / (max - min + 1)})` : 'transparent',
-                }}
-              >
-                <p style={{ color: dateObj && dateObj[1] / (max - min + 1) > 0.5 ? "#ffffff" : "#000000" }}>
-                  {dateObj ? dateObj[0].getDate() : ""}
-                </p>
-              </div>
-            ))}
+          <div key={i} className="grid grid-cols-7 gap-0">
+            {week.map((dateObj, j) => {
+              // determine if this cell and its immediate horizontal neighbors are selected
+              const selected = dateObj && dateObj[1] > 0;
+              const leftSelected = j > 0 && week[j - 1] && week[j - 1][1] > 0;
+              const rightSelected = j < 6 && week[j + 1] && week[j + 1][1] > 0;
+
+              // approximate tailwind 'rounded-md' in px
+              const radius = 7;
+              const borderRadiusStyle = selected
+                ? {
+                    borderTopLeftRadius: leftSelected ? 0 : radius,
+                    borderBottomLeftRadius: leftSelected ? 0 : radius,
+                    borderTopRightRadius: rightSelected ? 0 : radius,
+                    borderBottomRightRadius: rightSelected ? 0 : radius,
+                  }
+                : { borderRadius: radius };
+
+              return (
+                <div
+                  key={j}
+                  className="w-10 h-10 flex items-center justify-center"
+                  style={{
+                    backgroundColor: dateObj ? `rgba(31, 114, 230, ${dateObj[1] / max})` : "transparent",
+                    ...borderRadiusStyle,
+                  }}
+                >
+                  <p style={{ color: dateObj && dateObj[1] / max > 0.5 ? "#ffffff" : "#000000" }}>
+                    {dateObj ? dateObj[0].getDate() : ""}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         ))}
       </div>

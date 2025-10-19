@@ -10,31 +10,7 @@ const example_schema = {
             "0715-1230",
             "1545-1700"
           ]
-        },
-        {
-          "firstName": "Luca",
-          "lastName": "Denhez",
-          "availabileTimes": [
-            "0715-1230",
-            "1545-1700"
-          ]
-        },
-        {
-          "firstName": "Luca",
-          "lastName": "Denhez",
-          "availabileTimes": [
-            "0715-1230",
-            "1545-1700"
-          ]
-        },
-        {
-          "firstName": "Luca",
-          "lastName": "Denhez",
-          "availabileTimes": [
-            "0715-1230",
-            "1545-1700"
-          ]
-        },
+        },      
       ]
     },
     {
@@ -69,6 +45,117 @@ const example_schema = {
     {
       "day": "10-22-2025",
       "people": [
+        {
+          "firstName": "Luca",
+          "lastName": "Denhez",
+          "availabileTimes": [
+            "0715-1230",
+            "1545-1700"
+          ]
+        },
+        {
+          "firstName": "Luca",
+          "lastName": "Denhez",
+          "availabileTimes": [
+            "0715-1230",
+            "1545-1700"
+          ]
+        },
+        {
+          "firstName": "Luca",
+          "lastName": "Denhez",
+          "availabileTimes": [
+            "0715-1230",
+            "1545-1700"
+          ]
+        }
+      ]
+    },
+    {
+      "day": "10-29-2025",
+      "people": [
+        {
+          "firstName": "Luca",
+          "lastName": "Denhez",
+          "availabileTimes": [
+            "0715-1230",
+            "1545-1700"
+          ]
+        },
+        {
+          "firstName": "Luca",
+          "lastName": "Denhez",
+          "availabileTimes": [
+            "0715-1230",
+            "1545-1700"
+          ]
+        },
+        {
+          "firstName": "Luca",
+          "lastName": "Denhez",
+          "availabileTimes": [
+            "0715-1230",
+            "1545-1700"
+          ]
+        },
+        {
+          "firstName": "Luca",
+          "lastName": "Denhez",
+          "availabileTimes": [
+            "0715-1230",
+            "1545-1700"
+          ]
+        }
+      ]
+    },
+    {
+      "day": "10-30-2025",
+      "people": [
+        {
+          "firstName": "Luca",
+          "lastName": "Denhez",
+          "availabileTimes": [
+            "0715-1230",
+            "1545-1700"
+          ]
+        },
+        {
+          "firstName": "Luca",
+          "lastName": "Denhez",
+          "availabileTimes": [
+            "0715-1230",
+            "1545-1700"
+          ]
+        },
+        {
+          "firstName": "Luca",
+          "lastName": "Denhez",
+          "availabileTimes": [
+            "0715-1230",
+            "1545-1700"
+          ]
+        },
+        {
+          "firstName": "Luca",
+          "lastName": "Denhez",
+          "availabileTimes": [
+            "0715-1230",
+            "1545-1700"
+          ]
+        }
+      ]
+    },
+    {
+      "day": "10-31-2025",
+      "people": [
+        {
+          "firstName": "Luca",
+          "lastName": "Denhez",
+          "availabileTimes": [
+            "0715-1230",
+            "1545-1700"
+          ]
+        },
         {
           "firstName": "Luca",
           "lastName": "Denhez",
