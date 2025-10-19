@@ -72,12 +72,9 @@ export default function Home() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                className="text-lg font-semibold bg-gradient-to-r from-blue-300 via-blue-500 to-blue-300 py-3 px-6 rounded-full text-white"
               >
-                <Link href={"/login"}>
-                  <button className="text-lg font-semibold bg-gradient-to-r from-blue-300 via-blue-500 to-blue-300 py-3 px-6 rounded-full text-white">
-                    Let's go!
-                  </button>
-                </Link>
+                <Link href={"/login"}>Let's go!</Link>
               </motion.button>
             </motion.div>
           </div>
